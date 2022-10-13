@@ -1,10 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" 
+             xmlns:viewmodel="clr-namespace:TodoREST.ViewModels"
+             xmlns:model="clr-namespace:TodoREST.Models"
+             x:DataType="viewmodel:TodoListViewModel"
              x:Class="TodoREST.Views.TodoListPage"
              Title="Todo">
+
     <ContentPage.ToolbarItems>
-        <ToolbarItem Text="Add Item" Clicked="OnAddItemClicked">
+        <ToolbarItem Text="Add Item" Command="{Binding AddItemCommand}">
             <ToolbarItem.IconImageSource>
                 <OnPlatform x:TypeArguments="ImageSource">
                     <On Platform="Android, WinUI" Value="plus.png" />
@@ -12,21 +16,30 @@
             </ToolbarItem.IconImageSource>
         </ToolbarItem>
     </ContentPage.ToolbarItems>
-    <CollectionView x:Name="collectionView"
+
+    <CollectionView ItemsSource="{Binding TodoItems}"
                     Margin="20"
-                    SelectionMode="Single"
-                    SelectionChanged="OnSelectionChanged">
+                    SelectionMode="None">
         <CollectionView.ItemTemplate>
-            <DataTemplate>
-                <Grid Padding="20,0,0,0"
-                      ColumnDefinitions="0.9*, 0.1*">
-                    <Label Text="{Binding Name}" 
-                           VerticalTextAlignment="Center" />
-                    <Image Grid.Column="1"
-                           Source="check.png" 
-                           IsVisible="{Binding Done}"
-                           HorizontalOptions="End" />
-                </Grid>
+            <DataTemplate x:DataType="model:TodoItem">
+
+                <Frame HeightRequest="60">
+                    <Frame.GestureRecognizers>
+                        <TapGestureRecognizer 
+                                Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:TodoListViewModel}}, Path=GoToDetailsCommand}"
+                                CommandParameter="{Binding .}" />
+                    </Frame.GestureRecognizers>
+                    <Grid Padding="20,0,0,0"
+                                ColumnDefinitions="0.9*, 0.1*">
+                        <Label Text="{Binding Name}" 
+                                VerticalTextAlignment="Center" />
+                        <Image Grid.Column="1"
+                               Source="check.png" 
+                               IsVisible="{Binding Done}"
+                               HorizontalOptions="End" />
+                    </Grid>
+                </Frame>
+
             </DataTemplate>
         </CollectionView.ItemTemplate>
     </CollectionView>
