@@ -1,29 +1,42 @@
 ﻿using TodoREST.Models;
+using TodoREST.Repository;
 
 namespace TodoREST.Services
 {
     public class TodoService : ITodoService
     {
-        IRestService _restService;
+        private readonly IGenericRepository service;
 
-        public TodoService(IRestService service)
+        public TodoService(IGenericRepository service)
         {
-            _restService = service;
+            this.service = service;
         }
 
-        public Task<List<TodoItem>> GetTasksAsync()
+        public async Task<List<TodoItem>> GetTasksAsync()
         {
-            return _restService.RefreshDataAsync();
+            return await service.GetAsync<List<TodoItem>>();
         }
 
-        public Task SaveTaskAsync(TodoItem item, bool isNewItem = false)
+        public async Task<TodoItem> GetTaskByIdAsync(string id)
         {
-            return _restService.SaveTodoItemAsync(item, isNewItem);
+            TodoItem item = await service.GetAsync<TodoItem>(id);
+            return item;
+        }
+
+        public async Task SaveTaskAsync(TodoItem item, bool isNewItem = false)
+        {
+            if (isNewItem)
+                await service.PostAsync(item);
+            else
+                await service.PutAsync(item);
+
+
+            //TodoItem newTodoItem = await service.PostAsync<TodoItem, TodoItem>(item);
         }
 
         public Task DeleteTaskAsync(TodoItem item)
         {
-            return _restService.DeleteTodoItemAsync(item.ID);
+            return service.DeleteAsync(item.ID);
         }
     }
 }

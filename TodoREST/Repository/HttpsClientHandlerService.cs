@@ -1,4 +1,4 @@
-﻿namespace TodoREST.Services
+﻿namespace TodoREST.Repository
 {
     public class HttpsClientHandlerService : IHttpsClientHandlerService
     {

@@ -1,4 +1,5 @@
-﻿using TodoREST.Services;
+﻿using TodoREST.Repository;
+using TodoREST.Services;
 using TodoREST.ViewModels;
 using TodoREST.Views;
 
@@ -19,8 +20,9 @@ public static class MauiProgram
 
         builder.Services.AddSingleton<IConnectivity>(Connectivity.Current);
         builder.Services.AddSingleton<IHttpsClientHandlerService, HttpsClientHandlerService>();
-		builder.Services.AddSingleton<IRestService, RestService>();
 		builder.Services.AddSingleton<ITodoService, TodoService>();
+
+		builder.Services.AddSingleton<IGenericRepository, GenericRepository>();
 
 
         builder.Services.AddSingleton<TodoListViewModel>();

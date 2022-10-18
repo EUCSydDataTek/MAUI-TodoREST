@@ -43,4 +43,10 @@ public partial class TodoItemViewModel : BaseViewModel
     {
         await Shell.Current.GoToAsync("..");
     }
+
+    [RelayCommand]
+    async Task GetItemById()
+    {
+        TodoItem = await _todoService.GetTaskByIdAsync("ecfa6f80-3671-4911-aabe-63cc442c1ecf");
+    }
 }

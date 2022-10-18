@@ -6,7 +6,7 @@ namespace TodoAPI.Interfaces
     {
         bool DoesItemExist(string id);
         IEnumerable<TodoItem> All { get; }
-        TodoItem Find(string id);
+        TodoItem? Find(string id);
         void Insert(TodoItem item);
         void Update(TodoItem item);
         void Delete(string id);

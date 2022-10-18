@@ -35,6 +35,24 @@ namespace TodoAPI.Controllers
         {
             return Ok(_todoRepository.All);
         }
+
+        [HttpGet("{id}")]
+        public IActionResult GetItemById(string id)
+        {
+            try
+            {
+                var item = _todoRepository.Find(id);
+                if (item == null)
+                {
+                    return NotFound(ErrorCode.RecordNotFound.ToString());
+                }
+                return Ok(item);
+            }
+            catch (Exception)
+            {
+                return BadRequest(ErrorCode.CouldNotDeleteItem.ToString());
+            }
+        }
         #endregion
 
         #region snippetCreate
@@ -47,7 +65,7 @@ namespace TodoAPI.Controllers
                 {
                     return BadRequest(ErrorCode.TodoItemNameAndNotesRequired.ToString());
                 }
-                bool itemExists = _todoRepository.DoesItemExist(item.ID);
+                bool itemExists = _todoRepository.DoesItemExist(item.ID!);
                 if (itemExists)
                 {
                     return StatusCode(StatusCodes.Status409Conflict, ErrorCode.TodoItemIDInUse.ToString());
@@ -72,7 +90,7 @@ namespace TodoAPI.Controllers
                 {
                     return BadRequest(ErrorCode.TodoItemNameAndNotesRequired.ToString());
                 }
-                var existingItem = _todoRepository.Find(item.ID);
+                var existingItem = _todoRepository.Find(item.ID!);
                 if (existingItem == null)
                 {
                     return NotFound(ErrorCode.RecordNotFound.ToString());

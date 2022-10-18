@@ -22,7 +22,7 @@ namespace TodoAPI.Services
             return _todoList.Any(item => item.ID == id);
         }
 
-        public TodoItem Find(string id)
+        public TodoItem? Find(string id)
         {
             return _todoList.FirstOrDefault(item => item.ID == id);
         }
@@ -34,15 +34,15 @@ namespace TodoAPI.Services
 
         public void Update(TodoItem item)
         {
-            var todoItem = this.Find(item.ID);
-            var index = _todoList.IndexOf(todoItem);
+            var todoItem = Find(item.ID!);
+            var index = _todoList.IndexOf(todoItem!);
             _todoList.RemoveAt(index);
             _todoList.Insert(index, item);
         }
 
         public void Delete(string id)
         {
-            _todoList.Remove(this.Find(id));
+            _todoList.Remove(Find(id)!);
         }
 
         private void InitializeData()

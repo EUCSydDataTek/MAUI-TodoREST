@@ -35,5 +35,7 @@
                 Command="{Binding DeleteCommand}" />
 		<Button Text="Cancel" 
                 Command="{Binding CancelCommand}" />
+        <Button Text="Get specific item" 
+                Command="{Binding GetItemByIdCommand}" />
 	</VerticalStackLayout>
 </ContentPage>
