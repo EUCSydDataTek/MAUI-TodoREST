@@ -23,9 +23,14 @@ For more information about the sample see:
 | Operation                	| HTTP Method 	| Relative URI        	| Parameters                	|
 |--------------------------	|-------------	|---------------------	|---------------------------	|
 | Get a list of todo items 	| GET         	| /api/todoitems/     	|                           	|
+| Get specifik todo item   	| GET         	| /api/todoitems/{id} 	|                           	|
 | Create a new todo item   	| POST        	| /api/todoitems/     	| A JSON formatted TodoItem 	|
 | Update a todo item       	| PUT         	| /api/todoitems/     	| A JSON formatted TodoItem 	|
 | Delete a todo item       	| DELETE      	| /api/todoitems/{id} 	|                           	|
+
+Bemærk at i denne branch er der tilføjet en ekstra metode, der giver mulighed for at hente et specifikt TodoItem.
+
+Dette kan testes fra TodoItemPage, hvor den nederste knap sender et hardkodet id afsted. Når TodoItem kommer retur, opdateres Pagen.
 
 &nbsp;
 
