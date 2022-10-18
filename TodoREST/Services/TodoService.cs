@@ -30,7 +30,6 @@ namespace TodoREST.Services
             else
                 await service.PutAsync(item);
 
-
             //TodoItem newTodoItem = await service.PostAsync<TodoItem, TodoItem>(item);
         }
 
