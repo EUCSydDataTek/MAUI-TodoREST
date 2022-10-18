@@ -1,14 +1,3 @@
----
-name: .NET MAUI - Consume a REST-based web service
-description: This sample demonstrates a Todo list application where the data is stored and accessed from a REST-based web service.
-page_type: sample
-languages:
-- csharp
-- xaml
-products:
-- dotnet-maui
-urlFragment: webservices-rest
----
 
 # Consume a REST-based web service
 
@@ -26,3 +15,14 @@ For more information about the sample see:
 
 - [Consume a REST-based web service](https://docs.microsoft.com/dotnet/maui/data-cloud/rest)
 - [Connect to local web services from iOS simulators and Android emulators](https://docs.microsoft.com/dotnet/maui/data-cloud/local-web-services)
+
+
+## Web service operations
+
+| Operation                	| HTTP Method 	| Relative URI        	| Parameters                	|
+|--------------------------	|-------------	|---------------------	|---------------------------	|
+| Get a list of todo items 	| GET         	| /api/todoitems/     	|                           	|
+| Create a new todo item   	| POST        	| /api/todoitems/     	| A JSON formatted TodoItem 	|
+| Update a todo item       	| PUT         	| /api/todoitems/     	| A JSON formatted TodoItem 	|
+| Delete a todo item       	| DELETE      	| /api/todoitems/{id} 	|                           	|
+
