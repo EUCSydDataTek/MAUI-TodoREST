@@ -2,8 +2,9 @@
 using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
+using TodoREST;
 
-namespace TodoREST.Repository;
+namespace HttpGenericRepository;
 public class GenericRepository : IGenericRepository
 {
     readonly HttpClient _client;
@@ -66,7 +67,7 @@ public class GenericRepository : IGenericRepository
         try
         {
             string json = JsonSerializer.Serialize<T>(data, _serializerOptions);
-            StringContent content = new StringContent(json, Encoding.UTF8, "application/json");
+            StringContent content = new(json, Encoding.UTF8, "application/json");
 
             HttpResponseMessage response = null;
             response = await _client.PostAsync(uri, content);
@@ -92,7 +93,7 @@ public class GenericRepository : IGenericRepository
         try
         {
             string json = JsonSerializer.Serialize<T>(data, _serializerOptions);
-            StringContent content = new StringContent(json, Encoding.UTF8, "application/json");
+            StringContent content = new(json, Encoding.UTF8, "application/json");
 
             HttpResponseMessage response = null;
             response = await _client.PostAsync(uri, content);
@@ -122,7 +123,7 @@ public class GenericRepository : IGenericRepository
         try
         {
             string json = JsonSerializer.Serialize<T>(data, _serializerOptions);
-            StringContent content = new StringContent(json, Encoding.UTF8, "application/json");
+            StringContent content = new(json, Encoding.UTF8, "application/json");
 
             HttpResponseMessage response = null;
             response = await _client.PutAsync(uri, content);

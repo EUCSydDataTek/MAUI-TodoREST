@@ -1,4 +1,4 @@
-﻿namespace TodoREST.Repository
+﻿namespace HttpGenericRepository
 {
     public interface IHttpsClientHandlerService
     {

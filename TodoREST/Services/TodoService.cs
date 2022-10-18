@@ -1,5 +1,5 @@
 ﻿using TodoREST.Models;
-using TodoREST.Repository;
+using HttpGenericRepository;
 
 namespace TodoREST.Services
 {

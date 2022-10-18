@@ -1,4 +1,4 @@
-﻿using TodoREST.Repository;
+﻿using HttpGenericRepository;
 using TodoREST.Services;
 using TodoREST.ViewModels;
 using TodoREST.Views;

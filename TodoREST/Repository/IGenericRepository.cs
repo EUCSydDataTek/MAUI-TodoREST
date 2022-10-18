@@ -1,4 +1,4 @@
-﻿namespace TodoREST.Repository;
+﻿namespace HttpGenericRepository;
 
 /// <summary>
 /// Remember to create a Constants.cs class with url's
