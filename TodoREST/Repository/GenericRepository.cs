@@ -2,7 +2,6 @@
 using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
-using TodoREST;
 
 namespace HttpGenericRepository;
 public class GenericRepository : IGenericRepository
@@ -32,13 +31,13 @@ public class GenericRepository : IGenericRepository
 
 
     #region GET
-    public async Task<T> GetAsync<T>(string id = "", string authToken = "")
+    public async Task<T> GetAsync<T>(Uri uri, string authToken = "")
     {
         ConfigureHttpClient(authToken);
 
         T result = default;
 
-        Uri uri = new(string.Format(Constants.RestUrl, id));
+        //Uri uri = new(string.Format(Constants.RestUrl, id));
         try
         {
             HttpResponseMessage response = await _client.GetAsync(uri);
@@ -58,11 +57,9 @@ public class GenericRepository : IGenericRepository
     #endregion
 
     #region POST
-    public async Task PostAsync<T>(T data, string authToken = "")
+    public async Task<bool> PostAsync<T>(Uri uri, T data, string authToken = "")
     {
         ConfigureHttpClient(authToken);
-
-        Uri uri = new(string.Format(Constants.RestUrl, string.Empty));
 
         try
         {
@@ -73,22 +70,25 @@ public class GenericRepository : IGenericRepository
             response = await _client.PostAsync(uri, content);
 
             if (response.IsSuccessStatusCode)
+            {
                 Debug.WriteLine(@"+++++ Item successfully created.");
+                return true;
+            }
         }
         catch (Exception ex)
         {
             Debug.WriteLine(@"----- ERROR {0}", ex.Message);
         }
+        Debug.WriteLine(@"----- Item NOT created!");
+        return false;
     }
 
-    public async Task<R> PostAsync<T, R>(T data, string authToken = "")
+    public async Task<R> PostAsync<T, R>(Uri uri, T data, string authToken = "")
     {
 
         ConfigureHttpClient(authToken);
 
         R result = default;
-
-        Uri uri = new(string.Format(Constants.RestUrl, string.Empty));
 
         try
         {
@@ -114,11 +114,9 @@ public class GenericRepository : IGenericRepository
     #endregion
 
     #region PUT
-    public async Task PutAsync<T>(T data, string authToken = "")
+    public async Task<bool> PutAsync<T>(Uri uri, T data, string authToken = "")
     {
         ConfigureHttpClient(authToken);
-
-        Uri uri = new(string.Format(Constants.RestUrl, string.Empty));
 
         try
         {
@@ -129,30 +127,38 @@ public class GenericRepository : IGenericRepository
             response = await _client.PutAsync(uri, content);
 
             if (response.IsSuccessStatusCode)
+            {
                 Debug.WriteLine(@"+++++ Item successfully updated.");
+                return true;
+            }
         }
         catch (Exception ex)
         {
             Debug.WriteLine(@"----- ERROR {0}", ex.Message);
         }
+        Debug.WriteLine(@"----- Item NOT updated!");
+        return false;
     }
     #endregion
 
     #region DELETE
-    public async Task DeleteAsync(string id, string authToken = "")
+    public async Task<bool> DeleteAsync(Uri uri, string authToken = "")
     {
-        Uri uri = new(string.Format(Constants.RestUrl, id));
-
         try
         {
             HttpResponseMessage response = await _client.DeleteAsync(uri);
             if (response.IsSuccessStatusCode)
+            {
                 Debug.WriteLine(@"+++++ TodoItem successfully deleted.");
+                return true;
+            }
         }
         catch (Exception ex)
         {
             Debug.WriteLine(@"----- ERROR {0}", ex.Message);
         }
+        Debug.WriteLine(@"----- Item NOT deleted!");
+        return false;
     }
     #endregion
 

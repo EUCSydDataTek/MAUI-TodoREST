@@ -20,13 +20,14 @@ For more information about the sample see:
 
 ## Web service operations
 
-| Operation                	| HTTP Method 	| Relative URI        	| Parameters                	|
-|--------------------------	|-------------	|---------------------	|---------------------------	|
-| Get a list of todo items 	| GET         	| /api/todoitems/     	|                           	|
-| Get specifik todo item   	| GET         	| /api/todoitems/{id} 	|                           	|
-| Create a new todo item   	| POST        	| /api/todoitems/     	| A JSON formatted TodoItem 	|
-| Update a todo item       	| PUT         	| /api/todoitems/     	| A JSON formatted TodoItem 	|
-| Delete a todo item       	| DELETE      	| /api/todoitems/{id} 	|                           	|
+| Operation                	| HTTP Method 	| Relative URI        	| Parameters                	| Returns    	|
+|--------------------------	|-------------	|---------------------	|---------------------------	|------------	|
+| Get a list of todo items 	| GET         	| /api/todoitems/     	|                           	| `Task<T>`    	|
+| Get specifik todo item   	| GET         	| /api/todoitems/{id} 	|                           	| `Task<T> `   	|
+| Create a new todo item   	| POST        	| /api/todoitems/     	| A JSON formatted TodoItem 	| `Task<bool> `	|
+| Create a new todo item   	| POST        	| /api/todoitems/     	| A JSON formatted TodoItem 	| `Task<R>  `  	|
+| Update a todo item       	| PUT         	| /api/todoitems/     	| A JSON formatted TodoItem 	| `Task<bool> `	|
+| Delete a todo item       	| DELETE      	| /api/todoitems/{id} 	|                           	| `Task<bool> 	`|
 
 Bemærk at i denne branch er der tilføjet en ekstra metode, der giver mulighed for at hente et specifikt TodoItem.
 
