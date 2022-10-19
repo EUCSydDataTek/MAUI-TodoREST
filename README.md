@@ -1,100 +1,38 @@
-# 2.GenericRepository
+# 4.NetworkResiliencePolly
 
-# Consume a REST-based web service
+Demo af Nuget pakken Polly, der benyttes til at "hørde" en netvørksforbindelse eller dens Resilience.
 
-This sample demonstrates a Todo list application where the data is stored and accessed from a REST-based web service. The web service code is in the TodoAPI project.
+> [Github: App-vNext/Polly](https://github.com/App-vNext/Polly)
+> 
+> [Welcome to the Polly wiki!](https://github.com/App-vNext/Polly/wiki)
+> 
+> [Fault Handling with Polly - A Beginners Guide](https://dotnetplaybook.com/fault-handling-with-polly-a-beginners-guide/)
 
-The app functionality is:
+### Demo af Polly 
 
-- View a list of tasks.
-- Add, edit, and delete tasks.
-- Set a task's status to 'done'.
+Forudsøtninger:
 
-In all cases the tasks are stored in an in-memory collection that's accessed through a REST-based web service.
+- ItemsController har variablen errorPercent = 100, svarende til at den i alle tilfælde returnerer HTTP 500 error. Variablen findes i WebApi og ItemsController klassen.
+- WebAPI projektet har et LogLevel = Debug i appsettings.Development.json filen
+- WebAPI projektet hostes i Kestrel og på port 5001
+- Både HttpClientDemo og WebApi projekterne startes samtidigt
+- Når begge projekter er loaded, skal både consollen for WebAPI og output-vinduet for HttpClientDemo vises.
 
-For more information about the sample see:
+##### Polly med RetryAsync policy
 
-- [Consume a REST-based web service](https://docs.microsoft.com/dotnet/maui/data-cloud/rest)
-- [Connect to local web services from iOS simulators and Android emulators](https://docs.microsoft.com/dotnet/maui/data-cloud/local-web-services)
+1. Når der klikkes på tabben BROWSE i simulatoren, prøver clienten 10 gange, hvilket kan ses i console vinduet for WebAPI.
+2. Når den prøver den 11. gang, opstår der en `HttpRequestExceptionEx` i Output vinduet.
+3. Sæt variablen errorPercent = 50 og se at nu er det tilfældigt om vi får statuskode 200 eller om den skal prøve et antal gange, dog maks. 10.
 
+##### Polly med WaitRetryAsync policy
 
-## Web service operations
+Udkommentér `.RetryAsync(10)` i `GetAsync<T>` metoden i Repository. Nu demonstreres tre forskellige udgaver af RetryAsync policy
 
-| Operation                	| HTTP Method 	| Relative URI        	| Parameters                	| Returns    	|
-|--------------------------	|-------------	|---------------------	|---------------------------	|------------	|
-| Get a list of todo items 	| GET         	| /api/todoitems/     	|                           	| `Task<T>`    	|
-| Get specifik todo item   	| GET         	| /api/todoitems/{id} 	|                           	| `Task<T> `   	|
-| Create a new todo item   	| POST        	| /api/todoitems/     	| A JSON formatted TodoItem 	| `Task<bool> `	|
-| Create a new todo item   	| POST        	| /api/todoitems/     	| A JSON formatted TodoItem 	| `Task<R>  `  	|
-| Update a todo item       	| PUT         	| /api/todoitems/     	| A JSON formatted TodoItem 	| `Task<bool> `	|
-| Delete a todo item       	| DELETE      	| /api/todoitems/{id} 	|                           	| `Task<bool> 	`|
+1. Sæt variablen errorPercent = 100 igen. 
+2. Når der klikkes på tabben BROWSE i simulatoren, prøver clienten 5 gange med 3 sekunders mellemrum, hvilket kan ses i console vinduet for WebAPI.
+2. Når den prøver den 6. gang, opstår der en `HttpRequestExceptionEx` i Output vinduet.
+3. En overloaded udgave med *exponential back-off* demonstreres. Der ventes 2, 4, 8, 16, 32 sekunder, hvorefter den igen fejler.
+4. Endnu en overloaded udgave der kan kalde en action når hvert forsøg påbegyndes. Udskriver hvor lang tid den vil vente inden næste gang.
 
-Bemærk at i denne branch er der tilføjet en ekstra metode, der giver mulighed for at hente et specifikt TodoItem.
+#### Policy Caching
 
-Dette kan testes fra TodoItemPage, hvor den nederste knap sender et hardkodet id afsted. Når TodoItem kommer retur, opdateres Pagen.
-
-&nbsp;
-
-# Generic Reposistory
-
-Her benyttes et generisk repository med følgende interface:
-
-```csharp
-public interface IGenericRepository
-{
-    Task<T> GetAsync<T>(string id = "", string authToken = "");
-
-    Task PostAsync<T>(T data, string authToken = "");
-
-    Task<R> PostAsync<T, R>(T data, string authToken = "");
-
-    Task PutAsync<T>(T data, string authToken = "");
-
-    Task DeleteAsync(string id, string authToken = "");
-}
-```
-
-Alle metoderne har mulighed for at tage imod en AccessToken.
-
-`Task<T> GetAsync<T>(string id = "", string authToken = "")` henter en `List<T>` hvis `id` er tom, men et specifikt item `<T>` hvis et `id` sendes med.
-
-Der er to udgaver af Post, nemlig:
-
-```
-Task PostAsync<T>(T data, string authToken = "");
-
-Task<R> PostAsync<T, R>(T data, string authToken = "");
-```
-
-Den første returnerer void, mens den anden returnerer det oprettede objekt, således at man f.eks. kan benytte et Id eller et TimeStamp som databasen opretter.
-
-Alle metoder skriver i Output vinduet, hvis man benytter Debug.
-
-&nbsp;
-
-## Configuration af URL
-
-Der oprettes en klasse kaldet Constants.cs, som tilpasses de aktuelle URL's:
-
-```csharp
-public static class Constants
-{
-    // URL of REST service
-    //public static string RestUrl = "https://YOURPROJECT.azurewebsites.net/api/todoitems/{0}";
-
-    // URL of REST service (Android does not use localhost)
-    // Use http cleartext for local deployment. Change to https for production
-    public static string LocalhostUrl = DeviceInfo.Platform == DevicePlatform.Android ? "10.0.2.2" : "localhost";
-    public static string Scheme = "https"; // or https
-    public static string Port = "5001"; // 5000 for http, 5001 for https
-    public static string RestUrl = $"{Scheme}://{LocalhostUrl}:{Port}/api/todoitems/{{0}}";
-}
-```
-
-
-&nbsp;
-
-## HttpsClientHandlerService
-I tilfælde af Debug, oprettes et `HttpMessageHandler` objekt, som sørger for at kortslutte
-kontrollen af localhost-certifikatets gyldighed.
- 
