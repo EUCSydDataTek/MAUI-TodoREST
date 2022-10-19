@@ -15,17 +15,20 @@ namespace TodoAPI.Controllers
         CouldNotDeleteItem
     }
     #endregion
-
     #region snippetDI
     [ApiController]
     [Route("api/[controller]")]
     public class TodoItemsController : ControllerBase
     {
-        private readonly ITodoRepository _todoRepository;
+        int errorPercent = 0;  // Er tallet 0 returneres altid HTTP 200, jo større værdi jo større chanche for fejl. Vælges 100 vil den hver gang returnere HTTP 500.
 
-        public TodoItemsController(ITodoRepository todoRepository)
+        private readonly ITodoRepository _todoRepository;
+        private readonly ILogger<TodoItemsController> _logger;
+
+        public TodoItemsController(ITodoRepository todoRepository, ILogger<TodoItemsController> logger)
         {
             _todoRepository = todoRepository;
+            _logger = logger;
         }
         #endregion
 
@@ -33,7 +36,20 @@ namespace TodoAPI.Controllers
         [HttpGet]
         public IActionResult List()
         {
-            return Ok(_todoRepository.All);
+            Random rnd = new Random();
+            int rndInteger = rnd.Next(1, 101);
+            if (rndInteger <= errorPercent)
+            {
+                _logger.LogWarning("---> StatusCode 500");
+                return StatusCode(StatusCodes.Status500InternalServerError, new List<Task>());
+            }
+            else
+            {
+                _logger.LogWarning("---> StatusCode 200");
+                return Ok(_todoRepository.All);
+            }
+
+            //return Ok(_todoRepository.All);
         }
 
         [HttpGet("{id}")]

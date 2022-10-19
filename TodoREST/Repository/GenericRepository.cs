@@ -1,4 +1,6 @@
-﻿using System.Diagnostics;
+﻿using Polly;
+using Polly.Registry;
+using System.Diagnostics;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
@@ -9,8 +11,9 @@ public class GenericRepository : IGenericRepository
     readonly HttpClient _client;
     readonly JsonSerializerOptions _serializerOptions;
     readonly IHttpsClientHandlerService _httpsClientHandlerService;
+    IAsyncPolicy<HttpResponseMessage> cachePolicy;
 
-    public GenericRepository(IHttpsClientHandlerService service)
+    public GenericRepository(IHttpsClientHandlerService service, IReadOnlyPolicyRegistry<string> policyRegistry)
     {
 #if DEBUG
         _httpsClientHandlerService = service;
@@ -27,6 +30,8 @@ public class GenericRepository : IGenericRepository
             PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
             WriteIndented = true
         };
+
+        cachePolicy = policyRegistry.Get<IAsyncPolicy<HttpResponseMessage>>("myCachePolicy");
     }
 
 
@@ -37,10 +42,31 @@ public class GenericRepository : IGenericRepository
 
         T result = default;
 
-        //Uri uri = new(string.Format(Constants.RestUrl, id));
         try
         {
-            HttpResponseMessage response = await _client.GetAsync(uri);
+            //HttpResponseMessage response = await _client.GetAsync(uri); // Erstattes af de næste linjer:
+
+            #region POLLY
+            HttpResponseMessage response = await Policy
+                .HandleResult<HttpResponseMessage>(res => !res.IsSuccessStatusCode)
+                .RetryAsync(10)
+            //.WaitAndRetryAsync(retryCount: 5, retryAttempt => TimeSpan.FromSeconds(3))
+            //.WaitAndRetryAsync(retryCount: 5, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)))
+            //.WaitAndRetryAsync
+            //(
+            //    retryCount: 5,
+            //    sleepDurationProvider: retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)),
+            //    onRetry: (ex, time) =>
+            //    {
+            //        Debug.WriteLine($"--> TimeSpan: {time.TotalSeconds}");
+            //    }
+            //)
+
+            .ExecuteAsync(async () => await _client.GetAsync(uri));
+
+            //HttpResponseMessage response = await cachePolicy.ExecuteAsync(context => _client.GetAsync(uri), new Context("FooKey"));
+            #endregion
+
             if (response.IsSuccessStatusCode)
             {
                 string content = await response.Content.ReadAsStringAsync();

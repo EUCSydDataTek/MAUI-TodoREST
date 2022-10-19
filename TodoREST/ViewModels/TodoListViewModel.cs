@@ -40,7 +40,7 @@ public partial class TodoListViewModel : BaseViewModel
             }
 
             IsBusy = true;
-            var todos = await service.GetTasksAsync();
+            List<TodoItem> todos = await service.GetTasksAsync();
 
             if (TodoItems.Count != 0)
                 TodoItems.Clear();
@@ -51,8 +51,8 @@ public partial class TodoListViewModel : BaseViewModel
         }
         catch (Exception ex)
         {
-            Debug.WriteLine($"Unable to get TodoItems: {ex.Message}");
-            await Shell.Current.DisplayAlert("Error!", ex.Message, "OK");
+            Debug.WriteLine($"----- Unable to get TodoItems: {ex.Message}");
+            //await Shell.Current.DisplayAlert("Error!", ex.Message, "OK");
         }
         finally
         {
