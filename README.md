@@ -36,3 +36,9 @@ Udkommentér `.RetryAsync(10)` i `GetAsync<T>` metoden i Repository. Nu demonstre
 
 #### Policy Caching
 
+[Polly Cache](https://github.com/App-vNext/Polly#cache)
+
+[Installing Polly.Caching.Memory via NuGet](https://github.com/App-vNext/Polly.Caching.MemoryCache)
+
+
+
