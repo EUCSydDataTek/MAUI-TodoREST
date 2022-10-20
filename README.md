@@ -42,15 +42,15 @@ Her benyttes et generisk repository med følgende interface:
 ```csharp
 public interface IGenericRepository
 {
-    Task<T> GetAsync<T>(string id = "", string authToken = "");
+    Task<T> GetAsync<T>(Uri uri, string authToken = "");
 
-    Task PostAsync<T>(T data, string authToken = "");
+    Task<bool> PostAsync<T>(Uri uri,T data, string authToken = "");
 
-    Task<R> PostAsync<T, R>(T data, string authToken = "");
+    Task<R> PostAsync<T, R>(Uri uri, T data, string authToken = "");
 
-    Task PutAsync<T>(T data, string authToken = "");
+    Task<bool> PutAsync<T>(Uri uri, T data, string authToken = "");
 
-    Task DeleteAsync(string id, string authToken = "");
+    Task<bool> DeleteAsync(Uri uri, string authToken = "");
 }
 ```
 
