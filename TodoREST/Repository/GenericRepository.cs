@@ -37,7 +37,6 @@ public class GenericRepository : IGenericRepository
 
         T result = default;
 
-        //Uri uri = new(string.Format(Constants.RestUrl, id));
         try
         {
             HttpResponseMessage response = await _client.GetAsync(uri);
