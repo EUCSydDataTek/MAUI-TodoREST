@@ -49,17 +49,18 @@ public class GenericRepository : IGenericRepository
             #region POLLY
             HttpResponseMessage response = await Policy
                 .HandleResult<HttpResponseMessage>(res => !res.IsSuccessStatusCode)
+
                 .RetryAsync(10)
-            //.WaitAndRetryAsync(retryCount: 5, retryAttempt => TimeSpan.FromSeconds(3))
-            //.WaitAndRetryAsync(retryCount: 5, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)))
-            //.WaitAndRetryAsync
-            //(
-            //    retryCount: 5,
-            //    sleepDurationProvider: retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)),
-            //    onRetry: (ex, time) =>
-            //    {
-            //        Debug.WriteLine($"--> TimeSpan: {time.TotalSeconds}");
-            //    }
+                //.WaitAndRetryAsync(retryCount: 5, retryAttempt => TimeSpan.FromSeconds(3))
+                //.WaitAndRetryAsync(retryCount: 5, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)))
+                //.WaitAndRetryAsync
+                //(
+                //    retryCount: 5,
+                //    sleepDurationProvider: retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)),
+                //    onRetry: (ex, time) =>
+                //    {
+                //        Debug.WriteLine($"--> TimeSpan: {time.TotalSeconds}");
+                //    }
             //)
 
             .ExecuteAsync(async () => await _client.GetAsync(uri));

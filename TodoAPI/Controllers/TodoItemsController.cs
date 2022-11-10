@@ -20,7 +20,7 @@ namespace TodoAPI.Controllers
     [Route("api/[controller]")]
     public class TodoItemsController : ControllerBase
     {
-        int errorPercent = 0;  // Er tallet 0 returneres altid HTTP 200, jo større værdi jo større chanche for fejl. Vælges 100 vil den hver gang returnere HTTP 500.
+        int errorPercent = 100;  // Er tallet 0 returneres altid HTTP 200, jo større værdi jo større chanche for fejl. Vælges 100 vil den hver gang returnere HTTP 500.
 
         private readonly ITodoRepository _todoRepository;
         private readonly ILogger<TodoItemsController> _logger;
