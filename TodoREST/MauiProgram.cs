@@ -19,7 +19,6 @@ public static class MauiProgram
 			});
 
         builder.Services.AddSingleton<IConnectivity>(Connectivity.Current);
-        builder.Services.AddSingleton<IHttpsClientHandlerService, HttpsClientHandlerService>();
 		builder.Services.AddSingleton<ITodoService, TodoService>();
 
 		builder.Services.AddSingleton<IGenericRepository, GenericRepository>();

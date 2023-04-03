@@ -8,20 +8,11 @@ public class GenericRepository : IGenericRepository
 {
     readonly HttpClient _client;
     readonly JsonSerializerOptions _serializerOptions;
-    readonly IHttpsClientHandlerService _httpsClientHandlerService;
 
-    public GenericRepository(IHttpsClientHandlerService service)
+    public GenericRepository()
     {
-#if DEBUG
-        _httpsClientHandlerService = service;
-        HttpMessageHandler handler = _httpsClientHandlerService.GetPlatformMessageHandler();
-        if (handler != null)
-            _client = new HttpClient(handler);
-        else
-            _client = new HttpClient();
-#else
-            _client = new HttpClient();
-#endif
+        _client = new HttpClient();
+
         _serializerOptions = new JsonSerializerOptions
         {
             PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
