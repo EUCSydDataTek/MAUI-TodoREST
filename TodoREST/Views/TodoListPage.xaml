@@ -1,14 +1,15 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" 
-             xmlns:viewmodel="clr-namespace:TodoREST.ViewModels"
-             xmlns:model="clr-namespace:TodoREST.Models"
-             x:DataType="viewmodel:TodoListViewModel"
-             x:Class="TodoREST.Views.TodoListPage"
-             Title="Todo">
+<?xml version="1.0" encoding="UTF-8" ?>
+<ContentPage
+    x:Class="TodoREST.Views.TodoListPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:model="clr-namespace:TodoREST.Models"
+    xmlns:viewmodel="clr-namespace:TodoREST.ViewModels"
+    Title="Todo"
+    x:DataType="viewmodel:TodoListViewModel">
 
     <ContentPage.ToolbarItems>
-        <ToolbarItem Text="Add Item" Command="{Binding AddItemCommand}">
+        <ToolbarItem Command="{Binding AddItemCommand}" Text="Add Item">
             <ToolbarItem.IconImageSource>
                 <OnPlatform x:TypeArguments="ImageSource">
                     <On Platform="Android, WinUI" Value="plus.png" />
@@ -17,30 +18,34 @@
         </ToolbarItem>
     </ContentPage.ToolbarItems>
 
-    <CollectionView ItemsSource="{Binding TodoItems}"
-                    Margin="20"
-                    SelectionMode="None">
-        <CollectionView.ItemTemplate>
-            <DataTemplate x:DataType="model:TodoItem">
+    <RefreshView
+        Margin="10"
+        Command="{Binding GetItemsCommand}"
+        IsRefreshing="{Binding IsRefreshing}">
 
-                <Frame HeightRequest="60">
-                    <Frame.GestureRecognizers>
-                        <TapGestureRecognizer 
-                                Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:TodoListViewModel}}, Path=GoToDetailsCommand}"
-                                CommandParameter="{Binding .}" />
-                    </Frame.GestureRecognizers>
-                    <Grid Padding="20,0,0,0"
-                                ColumnDefinitions="0.9*, 0.1*">
-                        <Label Text="{Binding Name}" 
-                                VerticalTextAlignment="Center" />
-                        <Image Grid.Column="1"
-                               Source="check.png" 
-                               IsVisible="{Binding Done}"
-                               HorizontalOptions="End" />
-                    </Grid>
-                </Frame>
+        <CollectionView
+            Margin="20"
+            ItemsSource="{Binding TodoItems}"
+            SelectionMode="None">
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="model:TodoItem">
 
-            </DataTemplate>
-        </CollectionView.ItemTemplate>
-    </CollectionView>
+                    <Frame Margin="0,5" HeightRequest="60">
+                        <Frame.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:TodoListViewModel}}, Path=GoToDetailsCommand}" CommandParameter="{Binding .}" />
+                        </Frame.GestureRecognizers>
+                        <Grid Padding="20,0,0,0" ColumnDefinitions="0.9*, 0.1*">
+                            <Label Text="{Binding Name}" VerticalTextAlignment="Center" />
+                            <Image
+                                Grid.Column="1"
+                                HorizontalOptions="End"
+                                IsVisible="{Binding Done}"
+                                Source="check.png" />
+                        </Grid>
+                    </Frame>
+
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+    </RefreshView>
 </ContentPage>

@@ -1,4 +1,5 @@
-﻿using CommunityToolkit.Mvvm.Input;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using TodoREST.Models;
@@ -19,6 +20,9 @@ public partial class TodoListViewModel : BaseViewModel
         this.service = service;
         this.connectivity = connectivity;
     }
+
+    [ObservableProperty]
+    bool isRefreshing;
 
     [RelayCommand]
     async Task GetItemsAsync()
@@ -53,6 +57,7 @@ public partial class TodoListViewModel : BaseViewModel
         finally
         {
             IsBusy = false;
+            IsRefreshing = false;
         }
     }
 

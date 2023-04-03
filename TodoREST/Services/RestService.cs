@@ -9,22 +9,11 @@ namespace TodoREST.Services
     {
         HttpClient _client;
         JsonSerializerOptions _serializerOptions;
-        IHttpsClientHandlerService _httpsClientHandlerService;
-
         public List<TodoItem> Items { get; private set; }
 
-        public RestService(IHttpsClientHandlerService service)
+        public RestService()
         {
-#if DEBUG
-            _httpsClientHandlerService = service;
-            HttpMessageHandler handler = _httpsClientHandlerService.GetPlatformMessageHandler();
-            if (handler != null)
-                _client = new HttpClient(handler);
-            else
-                _client = new HttpClient();
-#else
             _client = new HttpClient();
-#endif
             _serializerOptions = new JsonSerializerOptions
             {
                 PropertyNamingPolicy = JsonNamingPolicy.CamelCase,

@@ -33,29 +33,12 @@ For more information about the sample see:
 
 &nbsp;
 
-## Configuration af URL
+## Dev Tunnel
 
-Der oprettes en klasse kaldet Constants.cs, som tilpasses de aktuelle URL's:
+[How to use dev tunnels in Visual Studio 2022 with ASP.NET Core apps](https://learn.microsoft.com/da-dk/aspnet/core/test/dev-tunnels?view=aspnetcore-7.0)
 
-```csharp
-public static class Constants
-{
-    // URL of REST service
-    //public static string RestUrl = "https://YOURPROJECT.azurewebsites.net/api/todoitems/{0}";
+Oprettes på WebApi projektet. Benyt *Persistent* tunnel og hvis fysisk device benyttes så skal den også være *public*.
 
-    // URL of REST service (Android does not use localhost)
-    // Use http cleartext for local deployment. Change to https for production
-    public static string LocalhostUrl = DeviceInfo.Platform == DevicePlatform.Android ? "10.0.2.2" : "localhost";
-    public static string Scheme = "https"; // or https
-    public static string Port = "5001"; // 5000 for http, 5001 for https
-    public static string RestUrl = $"{Scheme}://{LocalhostUrl}:{Port}/api/todoitems/{{0}}";
-}
-```
+Start WebApi projektet for at få Url'en, som benyttes i client-projektet.
 
-
-&nbsp;
-
-## HttpsClientHandlerService
-I tilfælde af Debug, oprettes et `HttpMessageHandler` objekt, som sørger for at kortslutte
-kontrollen af localhost-certifikatets gyldighed.
- 
+Sæt begge projekter til at starte (*Properties* på Solution og vælg *Multiple startup projects*)
