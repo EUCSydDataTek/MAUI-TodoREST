@@ -4,6 +4,6 @@
     {
         // With DevTunnels, Url is not persistent
 
-        public static string RestUrl = "https://260ncfzw-5001.euw.devtunnels.ms/api/todoitems/{0}";  
+        public static string RestUrl = "<Your DevTunnel url>/{0}";  
     }
 }
