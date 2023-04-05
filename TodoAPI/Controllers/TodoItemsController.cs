@@ -57,7 +57,7 @@ namespace TodoAPI.Controllers
 
         #region snippetCreate
         [HttpPost]
-        public IActionResult Create([FromBody]TodoItem item)
+        public IActionResult Create([FromBody]Item item)
         {
             try
             {
@@ -82,7 +82,7 @@ namespace TodoAPI.Controllers
 
         #region snippetEdit
         [HttpPut]
-        public IActionResult Edit([FromBody] TodoItem item)
+        public IActionResult Edit([FromBody] Item item)
         {
             try
             {

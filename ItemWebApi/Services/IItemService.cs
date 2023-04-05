@@ -1,11 +1,11 @@
-﻿using TodoAPI.Models;
+﻿using ItemWebApi.Models;
 
-namespace TodoAPI.Interfaces
+namespace ItemWebApi.Services
 {
-    public interface ITodoRepository
+    public interface IItemService
     {
         bool DoesItemExist(string id);
-        IEnumerable<Item> All { get; }
+        IEnumerable<Item> GetAll();
         Item? Find(string id);
         void Insert(Item item);
         void Update(Item item);

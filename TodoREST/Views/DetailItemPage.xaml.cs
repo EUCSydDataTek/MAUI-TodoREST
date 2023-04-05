@@ -3,9 +3,9 @@ using TodoREST.ViewModels;
 
 namespace TodoREST.Views
 {
-    public partial class TodoItemPage : ContentPage
+    public partial class DetailItemPage : ContentPage
     {
-        public TodoItemPage(TodoItemViewModel vm)
+        public DetailItemPage(DetailItemViewModel vm)
         {
             InitializeComponent();
 

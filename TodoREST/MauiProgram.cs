@@ -19,16 +19,16 @@ public static class MauiProgram
 			});
 
         builder.Services.AddSingleton<IConnectivity>(Connectivity.Current);
-		builder.Services.AddSingleton<ITodoService, TodoService>();
+		builder.Services.AddSingleton<IDataService, DataService>();
 
 		builder.Services.AddSingleton<IGenericRepository, GenericRepository>();
 
 
-        builder.Services.AddSingleton<TodoListViewModel>();
-        builder.Services.AddSingleton<TodoListPage>();
+        builder.Services.AddSingleton<MainPageViewModel>();
+        builder.Services.AddSingleton<MainPage>();
 
-        builder.Services.AddTransient<TodoItemViewModel>();
-        builder.Services.AddTransient<TodoItemPage>();
+        builder.Services.AddTransient<DetailItemViewModel>();
+        builder.Services.AddTransient<DetailItemPage>();
 
 		return builder.Build();
 	}

@@ -5,14 +5,14 @@ namespace TodoAPI.Services
 {
     public class TodoRepository : ITodoRepository
     {
-        private List<TodoItem> _todoList;
+        private List<Item> _todoList;
 
         public TodoRepository()
         {
             InitializeData();
         }
 
-        public IEnumerable<TodoItem> All
+        public IEnumerable<Item> All
         {
             get { return _todoList; }
         }
@@ -22,17 +22,17 @@ namespace TodoAPI.Services
             return _todoList.Any(item => item.ID == id);
         }
 
-        public TodoItem? Find(string id)
+        public Item? Find(string id)
         {
             return _todoList.FirstOrDefault(item => item.ID == id);
         }
 
-        public void Insert(TodoItem item)
+        public void Insert(Item item)
         {
             _todoList.Add(item);
         }
 
-        public void Update(TodoItem item)
+        public void Update(Item item)
         {
             var todoItem = Find(item.ID!);
             var index = _todoList.IndexOf(todoItem!);
@@ -47,9 +47,9 @@ namespace TodoAPI.Services
 
         private void InitializeData()
         {
-            _todoList = new List<TodoItem>();
+            _todoList = new List<Item>();
 
-            var todoItem1 = new TodoItem
+            var todoItem1 = new Item
             {
                 ID = "6bb8a868-dba1-4f1a-93b7-24ebce87e243",
                 Name = "Learn app development",
@@ -57,7 +57,7 @@ namespace TodoAPI.Services
                 Done = true
             };
 
-            var todoItem2 = new TodoItem
+            var todoItem2 = new Item
             {
                 ID = "b94afb54-a1cb-4313-8af3-b7511551b33b",
                 Name = "Develop apps",
@@ -65,7 +65,7 @@ namespace TodoAPI.Services
                 Done = false
             };
 
-            var todoItem3 = new TodoItem
+            var todoItem3 = new Item
             {
                 ID = "ecfa6f80-3671-4911-aabe-63cc442c1ecf",
                 Name = "Publish apps",

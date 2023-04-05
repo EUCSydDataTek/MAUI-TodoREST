@@ -1,7 +1,7 @@
 ﻿namespace HttpGenericRepository;
 
 /// <summary>
-/// Remember to create a Constants.cs class with url's
+/// Remember to create a Constants.cs class with RESTurl
 /// </summary>
 public interface IGenericRepository
 {

@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace TodoAPI.Models
+namespace ItemWebApi.Models
 {
-    public class TodoItem
+    public class Item
     {
         [Required]
         public string? ID { get; set; }

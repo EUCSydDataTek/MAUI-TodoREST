@@ -8,14 +8,14 @@ using TodoREST.Views;
 
 namespace TodoREST.ViewModels;
 
-public partial class TodoListViewModel : BaseViewModel
+public partial class MainPageViewModel : BaseViewModel
 {
-    public ObservableCollection<TodoItem> TodoItems { get; } = new();
+    public ObservableCollection<Item> ItemsCollection { get; } = new();
 
-    readonly ITodoService service;
+    readonly IDataService service;
     private readonly IConnectivity connectivity;
 
-    public TodoListViewModel(ITodoService service, IConnectivity connectivity)
+    public MainPageViewModel(IDataService service, IConnectivity connectivity)
     {
         this.service = service;
         this.connectivity = connectivity;
@@ -40,18 +40,18 @@ public partial class TodoListViewModel : BaseViewModel
             }
 
             IsBusy = true;
-            var todos = await service.GetTasksAsync();
+            var items = await service.GetItemsAsync();
 
-            if (TodoItems.Count != 0)
-                TodoItems.Clear();
+            if (ItemsCollection.Count != 0)
+                ItemsCollection.Clear();
 
-            foreach (var todoitem in todos)
-                TodoItems.Add(todoitem);
+            foreach (var item in items)
+                ItemsCollection.Add(item);
 
         }
         catch (Exception ex)
         {
-            Debug.WriteLine($"Unable to get TodoItems: {ex.Message}");
+            Debug.WriteLine($"Unable to get Items: {ex.Message}");
             await Shell.Current.DisplayAlert("Error!", ex.Message, "OK");
         }
         finally
@@ -65,21 +65,21 @@ public partial class TodoListViewModel : BaseViewModel
     [RelayCommand]
     async Task AddItem()
     {
-        await Shell.Current.GoToAsync(nameof(TodoItemPage), true, new Dictionary<string, object>
+        await Shell.Current.GoToAsync(nameof(DetailItemPage), true, new Dictionary<string, object>
         {
-            {"item", new TodoItem { ID = Guid.NewGuid().ToString() } }
+            {"item", new Item { ID = Guid.NewGuid().ToString() } }
         });
     }
 
     [RelayCommand]
-    async Task GoToDetails(TodoItem todoItem)
+    async Task GoToDetails(Item item)
     {
-        if (todoItem == null)
+        if (item == null)
             return;
 
-        await Shell.Current.GoToAsync(nameof(TodoItemPage), new Dictionary<string, object>
+        await Shell.Current.GoToAsync(nameof(DetailItemPage), new Dictionary<string, object>
         {
-            {"item", todoItem }
+            {"item", item }
         });
     }
 }

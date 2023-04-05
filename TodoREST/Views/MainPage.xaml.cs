@@ -2,11 +2,11 @@
 
 namespace TodoREST.Views
 {
-    public partial class TodoListPage : ContentPage
+    public partial class MainPage : ContentPage
     {
-        TodoListViewModel vm;
+        MainPageViewModel vm;
 
-        public TodoListPage(TodoListViewModel vm)
+        public MainPage(MainPageViewModel vm)
         {
             InitializeComponent();
             BindingContext = vm;

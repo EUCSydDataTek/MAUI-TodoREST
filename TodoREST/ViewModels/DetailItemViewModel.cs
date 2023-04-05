@@ -5,21 +5,21 @@ using TodoREST.Services;
 
 namespace TodoREST.ViewModels;
 
-[QueryProperty(nameof(TodoItem), "item")]
-public partial class TodoItemViewModel : BaseViewModel
+[QueryProperty(nameof(TheItem), "item")]
+public partial class DetailItemViewModel : BaseViewModel
 {
-    readonly ITodoService _todoService;
-    public TodoItemViewModel(ITodoService service)
+    readonly IDataService _service;
+    public DetailItemViewModel(IDataService service)
     {
-        _todoService = service;
+        _service = service;
     }
 
     [ObservableProperty]
-    TodoItem todoItem;
+    Item theItem;
 
     bool isNewItem;
 
-    partial void OnTodoItemChanging(TodoItem value)
+    partial void OnTheItemChanging(Item value)
     {
         isNewItem = string.IsNullOrWhiteSpace(value.Name) && string.IsNullOrWhiteSpace(value.Notes) ? true : false;
     }
@@ -27,14 +27,14 @@ public partial class TodoItemViewModel : BaseViewModel
     [RelayCommand]
     async Task Save()
     {
-        await _todoService.SaveTaskAsync(TodoItem, isNewItem);
+        await _service.SaveItemAsync(TheItem, isNewItem);
         await Shell.Current.GoToAsync("..");
     }
 
     [RelayCommand]
     async Task Delete()
     {
-        await _todoService.DeleteTaskAsync(TodoItem);
+        await _service.DeleteItemAsync(TheItem);
         await Shell.Current.GoToAsync("..");
     }
 
@@ -42,11 +42,5 @@ public partial class TodoItemViewModel : BaseViewModel
     async Task Cancel()
     {
         await Shell.Current.GoToAsync("..");
-    }
-
-    [RelayCommand]
-    async Task GetItemById()
-    {
-        TodoItem = await _todoService.GetTaskByIdAsync("ecfa6f80-3671-4911-aabe-63cc442c1ecf");
     }
 }
