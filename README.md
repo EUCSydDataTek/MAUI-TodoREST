@@ -1,4 +1,4 @@
-# 2.GenericRepository
+# 2.ItemGenericRepository (Minimal)
 
 # Consume a REST-based web service
 
@@ -14,8 +14,7 @@ In all cases the tasks are stored in an in-memory collection that's accessed thr
 
 For more information about the sample see:
 
-- [Consume a REST-based web service](https://docs.microsoft.com/dotnet/maui/data-cloud/rest)
-- [Connect to local web services from iOS simulators and Android emulators](https://docs.microsoft.com/dotnet/maui/data-cloud/local-web-services)
+[Tutorial: Create a minimal API with ASP.NET Core](https://learn.microsoft.com/en-us/aspnet/core/tutorials/min-web-api?view=aspnetcore-7.0&tabs=visual-studio)
 
 
 ## Web service operations
