@@ -7,11 +7,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TodoREST", "TodoREST\TodoRE
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{8303D537-1F06-4E8F-92DD-75130D1C194D}"
 	ProjectSection(SolutionItems) = preProject
-		C:\Users\ecr\Downloads\GenericRepository.tgn = C:\Users\ecr\Downloads\GenericRepository.tgn
 		README.md = README.md
+		TodoWebApi.tgn = TodoWebApi.tgn
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ItemWebApi", "ItemWebApi\ItemWebApi.csproj", "{5FA7C8F0-DE8C-4F85-A3B0-3605F1AFDF56}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ItemWebApi", "ItemWebApi\ItemWebApi.csproj", "{5FA7C8F0-DE8C-4F85-A3B0-3605F1AFDF56}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
