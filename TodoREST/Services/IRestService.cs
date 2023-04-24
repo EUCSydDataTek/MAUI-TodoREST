@@ -8,6 +8,6 @@ namespace TodoREST.Services
 
         Task SaveTodoItemAsync(TodoItem item, bool isNewItem);
 
-        Task DeleteTodoItemAsync(string id);
+        Task DeleteTodoItemAsync(int id);
     }
 }

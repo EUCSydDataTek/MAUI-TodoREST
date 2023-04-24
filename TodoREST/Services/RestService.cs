@@ -45,8 +45,6 @@ namespace TodoREST.Services
 
         public async Task SaveTodoItemAsync(TodoItem item, bool isNewItem = false)
         {
-            Uri uri = new Uri(string.Format(Constants.RestUrl, string.Empty));
-
             try
             {
                 string json = JsonSerializer.Serialize<TodoItem>(item, _serializerOptions);
@@ -54,9 +52,15 @@ namespace TodoREST.Services
 
                 HttpResponseMessage response = null;
                 if (isNewItem)
+                {
+                    Uri uri = new Uri(string.Format(Constants.RestUrl, string.Empty));
                     response = await _client.PostAsync(uri, content);
+                }
                 else
+                {
+                    Uri uri = new Uri(string.Format(Constants.RestUrl, item.Id));
                     response = await _client.PutAsync(uri, content);
+                }
 
                 if (response.IsSuccessStatusCode)
                     Debug.WriteLine(@"\tTodoItem successfully saved.");
@@ -67,7 +71,7 @@ namespace TodoREST.Services
             }
         }
 
-        public async Task DeleteTodoItemAsync(string id)
+        public async Task DeleteTodoItemAsync(int id)
         {
             Uri uri = new Uri(string.Format(Constants.RestUrl, id));
 

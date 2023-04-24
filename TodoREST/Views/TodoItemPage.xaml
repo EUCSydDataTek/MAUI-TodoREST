@@ -28,7 +28,7 @@
 		<Entry Text="{Binding Path=TodoItem.Notes}"
                Placeholder="Enter notes" />
 		<Label Text="Done" />
-		<Switch IsToggled="{Binding Path=TodoItem.Done}" />
+		<Switch IsToggled="{Binding Path=TodoItem.IsComplete}" />
 		<Button Text="Save" 
                 Command="{Binding SaveCommand}" />
 		<Button Text="Delete"

@@ -39,7 +39,7 @@
                             <Image
                                 Grid.Column="1"
                                 HorizontalOptions="End"
-                                IsVisible="{Binding Done}"
+                                IsVisible="{Binding IsComplete}"
                                 Source="check.png" />
                         </Grid>
                     </Frame>

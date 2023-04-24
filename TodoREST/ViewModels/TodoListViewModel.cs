@@ -67,7 +67,7 @@ public partial class TodoListViewModel : BaseViewModel
     {
         await Shell.Current.GoToAsync(nameof(TodoItemPage), true, new Dictionary<string, object>
         {
-            {"item", new TodoItem { ID = Guid.NewGuid().ToString() } }
+            {"item", new TodoItem() }
         });
     }
 

@@ -23,7 +23,7 @@ namespace TodoREST.Services
 
         public Task DeleteTaskAsync(TodoItem item)
         {
-            return _restService.DeleteTodoItemAsync(item.ID);
+            return _restService.DeleteTodoItemAsync(item.Id);
         }
     }
 }
