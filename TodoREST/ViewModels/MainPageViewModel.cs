@@ -67,7 +67,7 @@ public partial class MainPageViewModel : BaseViewModel
     {
         await Shell.Current.GoToAsync(nameof(DetailItemPage), true, new Dictionary<string, object>
         {
-            {"item", new Item { ID = Guid.NewGuid().ToString() } }
+            {"item", new Item() }
         });
     }
 

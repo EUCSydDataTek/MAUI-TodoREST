@@ -2,10 +2,10 @@
 
 namespace ItemWebApi.Models
 {
-    public class Item
+    public class Todo
     {
         [Required]
-        public string? ID { get; set; }
+        public int Id { get; set; }
 
         [Required]
         public string? Name { get; set; }
@@ -13,6 +13,6 @@ namespace ItemWebApi.Models
         [Required]
         public string? Notes { get; set; }
 
-        public bool Done { get; set; }
+        public bool IsComplete { get; set; }
     }
 }

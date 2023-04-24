@@ -23,7 +23,7 @@
         <Label Text="Notes" />
         <Entry Placeholder="Enter notes" Text="{Binding Path=TheItem.Notes}" />
         <Label Text="Done" />
-        <Switch IsToggled="{Binding Path=TheItem.Done}" />
+        <Switch IsToggled="{Binding Path=TheItem.IsComplete}" />
         <Button Command="{Binding SaveCommand}" Text="Save" />
         <Button Command="{Binding DeleteCommand}" Text="Delete" />
         <Button Command="{Binding CancelCommand}" Text="Cancel" />

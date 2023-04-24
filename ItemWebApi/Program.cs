@@ -1,62 +1,80 @@
 using ItemWebApi.Models;
-using ItemWebApi.Services;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-builder.Services.AddSingleton<IItemService, ItemService>();
+builder.Services.AddDbContext<TodoDb>(opt => opt.UseInMemoryDatabase("TodoList"));
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
 
 app.UseHttpsRedirection();
 
 // Tutorial: Create a minimal API with ASP.NET Core (https://learn.microsoft.com/en-us/aspnet/core/tutorials/min-web-api?view=aspnetcore-7.0&tabs=visual-studio)
+// Unit and integration tests in Minimal API apps (https://learn.microsoft.com/en-us/aspnet/core/fundamentals/minimal-apis/test-min-api?view=aspnetcore-7.0)
 
-app.MapGet("/items", (IItemService service) => service.GetAll());
+app.MapGet("/", () => "Hello World!");
 
-app.MapGet("/items{id}", (string id, IItemService service) => service.Find(id)
-    is Item item ? Results.Ok(item) : Results.NotFound());
+var todoItems = app.MapGroup("/todoitems");
 
-app.MapPost("/items", (Item item, IItemService service) =>
-{
-    service.Insert(item);
-    return Results.Created($"/items/{item.ID}", item);
-});
-
-app.MapPut("/items/{id}", (string id, Item inputItem, IItemService service) =>
-{
-    var item = service.Find(id);
-
-    if (item is null) return Results.NotFound();
-
-    item.Name = inputItem.Name;
-    item.Notes = inputItem.Notes;
-    item.Done = inputItem.Done;
-
-    service.Update(item);
-
-    return Results.NoContent();
-});
-
-app.MapDelete("/items/{id}", (string id, IItemService service) =>
-{
-    if (service.Find(id) is Item item)
-    {
-        service.Delete(id);
-        return Results.Ok(item);
-    }
-    return Results.NotFound();
-});
+todoItems.MapGet("/", GetAllTodos);
+todoItems.MapGet("/complete", GetCompleteTodos);
+todoItems.MapGet("/{id}", GetTodo);
+todoItems.MapPost("/", CreateTodo);
+todoItems.MapPut("/{id}", UpdateTodo);
+todoItems.MapDelete("/{id}", DeleteTodo);
 
 app.Run();
+
+static async Task<IResult> GetAllTodos(TodoDb db)
+{
+    return TypedResults.Ok(await db.Todos.ToArrayAsync());
+}
+
+static async Task<IResult> GetCompleteTodos(TodoDb db)
+{
+    return TypedResults.Ok(await db.Todos.Where(t => t.IsComplete).ToListAsync());
+}
+
+static async Task<IResult> GetTodo(int id, TodoDb db)
+{
+    return await db.Todos.FindAsync(id)
+        is Todo todo
+            ? TypedResults.Ok(todo)
+            : TypedResults.NotFound();
+}
+
+static async Task<IResult> CreateTodo(Todo todo, TodoDb db)
+{
+    db.Todos.Add(todo);
+    await db.SaveChangesAsync();
+
+    return TypedResults.Created($"/todoitems/{todo.Id}", todo);
+}
+
+static async Task<IResult> UpdateTodo(int id, Todo inputTodo, TodoDb db)
+{
+    var todo = await db.Todos.FindAsync(id);
+
+    if (todo is null) return TypedResults.NotFound();
+
+    todo.Name = inputTodo.Name;
+    todo.IsComplete = inputTodo.IsComplete;
+
+    await db.SaveChangesAsync();
+
+    return TypedResults.NoContent();
+}
+
+static async Task<IResult> DeleteTodo(int id, TodoDb db)
+{
+    if (await db.Todos.FindAsync(id) is Todo todo)
+    {
+        db.Todos.Remove(todo);
+        await db.SaveChangesAsync();
+        return TypedResults.Ok(todo);
+    }
+
+    return TypedResults.NotFound();
+}
 

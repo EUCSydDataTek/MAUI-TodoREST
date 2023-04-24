@@ -35,7 +35,7 @@ namespace TodoREST.Services
             }
             else
             {
-                Uri uri = new Uri(string.Format(Constants.RestUrl, item.ID));
+                Uri uri = new Uri(string.Format(Constants.RestUrl, item.Id));
                 await service.PutAsync(uri, item);
             }
 
@@ -44,7 +44,7 @@ namespace TodoREST.Services
 
         public async Task DeleteItemAsync(Item item)
         {
-            Uri uri = new Uri(string.Format(Constants.RestUrl, item.ID));
+            Uri uri = new Uri(string.Format(Constants.RestUrl, item.Id));
             bool result = await service.DeleteAsync(uri);
         }
     }
