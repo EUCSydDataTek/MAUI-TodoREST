@@ -1,12 +1,13 @@
 # 2.ItemGenericRepository & Minimal Api
 
-# Minimal API
+# Minimal API (ItemWebApi)
 
-**TodoWebApi** er et Minimal API med ASP.NET Core, som er bygget på baggrund af Tutorial: [Create a minimal API with ASP.NET Core](https://learn.microsoft.com/en-us/aspnet/core/tutorials/min-web-api?view=aspnetcore-7.0&tabs=visual-studio)
+**ItemWebApi** er et Minimal API med ASP.NET Core, som er bygget på baggrund af Tutorial: 
+[Create a minimal API with ASP.NET Core](https://learn.microsoft.com/en-us/aspnet/core/tutorials/min-web-api?view=aspnetcore-7.0&tabs=visual-studio)
 
 Data gemmes vha. EntityFramework i en Memory database.
 
-API'et kan testes vha. den medfølgende todo.http fil.
+API'et kan testes vha. den medfølgende **todo.http** fil.
 
 ### API operations
 
@@ -19,9 +20,50 @@ API'et kan testes vha. den medfølgende todo.http fil.
 | PUT /todoitems/{id}     | Update an existing item   | To-do item   | None                 |
 | DELETE /todoitems/{id}  | Delete an item            | None         | None                 |
 
-&nbsp;
----
+###### Tabellen er lavet med [Tables Generator](https://www.tablesgenerator.com/markdown_tables)
 
+&nbsp;
+
+#### Nuget libraries
+- Microsoft.EntityFrameworkCore.InMemory 7.x.x
+
+&nbsp;
+
+## Deploy med Dev Tunnel
+
+Pga. at Android Emulator benytter et andet netværk og heller ikke kender localhost er det nemmest at benytte ****Dev Tunnels***.
+
+[How to use dev tunnels in Visual Studio 2022 with ASP.NET Core apps](https://learn.microsoft.com/da-dk/aspnet/core/test/dev-tunnels?view=aspnetcore-7.0)
+
+Oprettes på WebApi projektet. Benyt *Persistent* tunnel og hvis fysisk device benyttes så skal den også være *public*.
+
+Start først WebApi projektet for at få Url'en, som benyttes i client-projektet.
+
+
+## Test med .http file
+
+Opret en .http fil i WebApi projektet:
+
+```csharp
+@devtunnel = "<your DevTunnel address">
+
+GET {{devtunnel}}/todoitems
+
+###
+
+POST {{devtunnel}}/todoitems
+Content-Type application/json
+
+{
+  "name": "Walk dog",
+  "notes": "In the rain",
+  "isComplete": false
+}
+```
+
+&nbsp;
+
+---
 # MAUI mobile client
 
 Mobil klienten har følgende funktioner:
@@ -33,7 +75,31 @@ Mobil klienten har følgende funktioner:
 
 &nbsp;
 
-### Generic Reposistory
+#### Nuget libraries
+- CommunityToolkit.Mvvm 8.x.x
+
+&nbsp;
+
+## Test
+
+Sæt begge projekter til at starte (*Properties* på Solution og vælg *Multiple startup projects*)
+
+I `Constants` klassen tilrettes url'en:
+
+```csharp
+public static class Constants
+{
+    // DevTunnes url
+    //public static string RestUrl = $"<Dev Tunnel>/todoitems/{0}";
+
+    public static string RestUrl = "https://1yec70x4-7247.euw.devtunnels.ms/todoitems/{0}";
+}
+```
+
+
+&nbsp;
+
+# Generic Reposistory
 
 Her benyttes et generisk repository med følgende interface:
 
