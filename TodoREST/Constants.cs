@@ -2,7 +2,7 @@
 {
     public static class Constants
     {
-        // With DevTunnels, Url is not persistent
+        // With DevTunnels
 
         public static string RestUrl = "<Your DevTunnel url>/todoitems/{0}";
     }
