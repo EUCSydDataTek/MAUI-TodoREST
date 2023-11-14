@@ -14,29 +14,27 @@ namespace TodoREST.Services
 
         public async Task<List<Item>> GetItemsAsync()
         {
-            Uri uri = new Uri(string.Format(Constants.RestUrl, string.Empty));
-            return await service.GetAsync<List<Item>>(uri);
+            UriBuilder builder = new(Constants.BaseUrl) { Path = Constants.Endpoint };
+            return await service.GetAsync<List<Item>>(builder.Uri);
         }
 
         public async Task<Item> GetItemByIdAsync(string id)
         {
-            Uri uri = new Uri(string.Format(Constants.RestUrl, id));
-            return await service.GetAsync<Item>(uri);
+            UriBuilder builder = new(Constants.BaseUrl) { Path = $"{Constants.Endpoint}/{id}" };
+            return await service.GetAsync<Item>(builder.Uri);
         }
 
         public async Task SaveItemAsync(Item item, bool isNewItem = false)
         {
-
-
             if (isNewItem)
             {
-                Uri uri = new Uri(string.Format(Constants.RestUrl, string.Empty));
-                await service.PostAsync(uri, item);
+                UriBuilder builder = new(Constants.BaseUrl) { Path = Constants.Endpoint };
+                await service.PostAsync(builder.Uri, item);
             }
             else
             {
-                Uri uri = new Uri(string.Format(Constants.RestUrl, item.Id));
-                await service.PutAsync(uri, item);
+                UriBuilder builder = new(Constants.BaseUrl) { Path = $"{Constants.Endpoint}/{item.Id}" };
+                await service.PutAsync(builder.Uri, item);
             }
 
             //Item newItem = await service.PostAsync<Item, Item>(item);
@@ -44,8 +42,8 @@ namespace TodoREST.Services
 
         public async Task DeleteItemAsync(Item item)
         {
-            Uri uri = new Uri(string.Format(Constants.RestUrl, item.Id));
-            bool result = await service.DeleteAsync(uri);
+            UriBuilder builder = new(Constants.BaseUrl) { Path = $"{Constants.Endpoint}/{item.Id}" };
+            bool result = await service.DeleteAsync(builder.Uri);
         }
     }
 }

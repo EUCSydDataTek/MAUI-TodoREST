@@ -2,7 +2,8 @@
 {
     public static class Constants
     {
-        // DevTunnes url
-        public static string RestUrl = $"<Your DevTunnnel Address>/todoitems/{{0}}";
+        // DevTunnes url, tilpas adressen
+        public static string BaseUrl = "https://xxx.euw.devtunnels.ms";
+        public static string Endpoint = "todoitems";
     }
 }
