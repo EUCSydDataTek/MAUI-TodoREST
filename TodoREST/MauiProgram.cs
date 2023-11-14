@@ -1,7 +1,12 @@
 ﻿using HttpGenericRepository;
+using Polly.Caching;
+using Polly.Registry;
+using Polly;
 using TodoREST.Services;
 using TodoREST.ViewModels;
 using TodoREST.Views;
+using TodoREST.Repository;
+using TodoREST.Policies;
 
 namespace TodoREST;
 
@@ -22,7 +27,7 @@ public static class MauiProgram
 		builder.Services.AddSingleton<IDataService, DataService>();
 
 		builder.Services.AddSingleton<IGenericRepository, GenericRepository>();
-
+        builder.Services.AddSingleton(new ClientPolicy());  // husk
 
         builder.Services.AddSingleton<MainPageViewModel>();
         builder.Services.AddSingleton<MainPage>();
@@ -30,6 +35,18 @@ public static class MauiProgram
         builder.Services.AddTransient<DetailItemViewModel>();
         builder.Services.AddTransient<DetailItemPage>();
 
-		return builder.Build();
+        // Polly Caching
+        builder.Services.AddMemoryCache();
+        builder.Services.AddSingleton<IAsyncCacheProvider, Polly.Caching.Memory.MemoryCacheProvider>();
+        builder.Services.AddSingleton<IReadOnlyPolicyRegistry<string>, PolicyRegistry>((serviceProvider) =>
+        {
+            PolicyRegistry registry = new();
+            registry.Add("myCachePolicy",
+                Policy.CacheAsync(serviceProvider.GetRequiredService<IAsyncCacheProvider>().AsyncFor<HttpResponseMessage>(),
+                    TimeSpan.FromSeconds(10)));
+            return registry;
+        });
+
+        return builder.Build();
 	}
 }
