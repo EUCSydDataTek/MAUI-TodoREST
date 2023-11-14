@@ -1,11 +1,11 @@
-@devtunnel = "<your DevTunnel address">
+@devtunnel = https://xxx.euw.devtunnels.ms
 
 GET {{devtunnel}}/todoitems
 
 ###
 
 POST {{devtunnel}}/todoitems
-Content-Type application/json
+Content-Type: application/json
 
 {
   "name": "Walk dog",
@@ -20,7 +20,7 @@ GET {{devtunnel}}/todoitems/1
 ###
 
 PUT {{devtunnel}}/todoitems/1
-Content-Type application/json
+Content-Type: application/json
 
 {
   "name": "Walk dog",
