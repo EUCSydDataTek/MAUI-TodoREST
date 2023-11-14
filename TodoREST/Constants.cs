@@ -4,6 +4,7 @@
     {
         // With DevTunnels
 
-        public static string RestUrl = "<Your Devtunnel Address>/todoitems/{0}";
+        public static string BaseUrl = "https://xxx.euw.devtunnels.ms";
+        public static string Endpoint = "todoitems";
     }
 }

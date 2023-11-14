@@ -42,17 +42,17 @@ Start først WebApi projektet for at få Url'en, som benyttes i client-projektet
 
 ## Test med .http file
 
-Opret en .http fil i WebApi projektet:
+Opret en .http fil i WebApi projektet. Start Api'et og se adressen. Tilpass adressen i eksemplet herunder:
 
 ```csharp
-@devtunnel = "<your DevTunnel address">
+@devtunnel = https://xxx.euw.devtunnels.ms
 
 GET {{devtunnel}}/todoitems
 
 ###
 
 POST {{devtunnel}}/todoitems
-Content-Type application/json
+Content-Type: application/json
 
 {
   "name": "Walk dog",
@@ -89,10 +89,9 @@ I `Constants` klassen tilrettes url'en:
 ```csharp
 public static class Constants
 {
-    // DevTunnes url
-    //public static string RestUrl = $"<Dev Tunnel>/todoitems/{0}";
-
-    public static string RestUrl = "https://1yec70x4-7247.euw.devtunnels.ms/todoitems/{0}";
+    // DevTunnes url, tilpas adressen
+    public static string BaseUrl = "https://xxx.euw.devtunnels.ms";
+    public static string Endpoint = "todoitems";
 }
 ```
 

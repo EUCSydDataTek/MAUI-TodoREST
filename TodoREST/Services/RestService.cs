@@ -25,10 +25,10 @@ namespace TodoREST.Services
         {
             Items = new List<TodoItem>();
 
-            Uri uri = new Uri(string.Format(Constants.RestUrl, string.Empty));
+            UriBuilder builder = new(Constants.BaseUrl) { Path = Constants.Endpoint };
             try
             {
-                HttpResponseMessage response = await _client.GetAsync(uri);
+                HttpResponseMessage response = await _client.GetAsync(builder.Uri);
                 if (response.IsSuccessStatusCode)
                 {
                     string content = await response.Content.ReadAsStringAsync();
@@ -53,13 +53,13 @@ namespace TodoREST.Services
                 HttpResponseMessage response = null;
                 if (isNewItem)
                 {
-                    Uri uri = new Uri(string.Format(Constants.RestUrl, string.Empty));
-                    response = await _client.PostAsync(uri, content);
+                    UriBuilder builder = new(Constants.BaseUrl) { Path = Constants.Endpoint };
+                    response = await _client.PostAsync(builder.Uri, content);
                 }
                 else
                 {
-                    Uri uri = new Uri(string.Format(Constants.RestUrl, item.Id));
-                    response = await _client.PutAsync(uri, content);
+                    UriBuilder builder = new(Constants.BaseUrl) { Path = $"{Constants.Endpoint}/{item.Id}" };
+                    response = await _client.PutAsync(builder.Uri, content);
                 }
 
                 if (response.IsSuccessStatusCode)
@@ -73,11 +73,11 @@ namespace TodoREST.Services
 
         public async Task DeleteTodoItemAsync(int id)
         {
-            Uri uri = new Uri(string.Format(Constants.RestUrl, id));
+            UriBuilder builder = new(Constants.BaseUrl) { Path = $"{Constants.Endpoint}/{id}" };
 
             try
             {
-                HttpResponseMessage response = await _client.DeleteAsync(uri);
+                HttpResponseMessage response = await _client.DeleteAsync(builder.Uri);
                 if (response.IsSuccessStatusCode)
                     Debug.WriteLine(@"\tTodoItem successfully deleted.");
             }
