@@ -3,11 +3,13 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-var connectionString = builder.Configuration.GetConnectionString("Todo") ?? "Data Source=Todo.db";
-builder.Services.AddSqlite<TodoDb>(connectionString);
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+builder.Services.AddDbContext<TodoDbContext>(options => options.UseSqlite(connectionString));
+
+// Shortcut for the above
+//builder.Services.AddSqlite<TodoDbContext>(connectionString);
 
 var app = builder.Build();
-
 
 app.UseHttpsRedirection();
 
@@ -27,17 +29,17 @@ todoItems.MapDelete("/{id}", DeleteTodo);
 
 app.Run();
 
-static async Task<IResult> GetAllTodos(TodoDb db)
+static async Task<IResult> GetAllTodos(TodoDbContext db)
 {
     return TypedResults.Ok(await db.Todos.ToArrayAsync());
 }
 
-static async Task<IResult> GetCompleteTodos(TodoDb db)
+static async Task<IResult> GetCompleteTodos(TodoDbContext db)
 {
     return TypedResults.Ok(await db.Todos.Where(t => t.IsComplete).ToListAsync());
 }
 
-static async Task<IResult> GetTodo(int id, TodoDb db)
+static async Task<IResult> GetTodo(int id, TodoDbContext db)
 {
     return await db.Todos.FindAsync(id)
         is Todo todo
@@ -45,7 +47,7 @@ static async Task<IResult> GetTodo(int id, TodoDb db)
             : TypedResults.NotFound();
 }
 
-static async Task<IResult> CreateTodo(Todo todo, TodoDb db)
+static async Task<IResult> CreateTodo(Todo todo, TodoDbContext db)
 {
     db.Todos.Add(todo);
     await db.SaveChangesAsync();
@@ -53,7 +55,7 @@ static async Task<IResult> CreateTodo(Todo todo, TodoDb db)
     return TypedResults.Created($"/todoitems/{todo.Id}", todo);
 }
 
-static async Task<IResult> UpdateTodo(int id, Todo inputTodo, TodoDb db)
+static async Task<IResult> UpdateTodo(int id, Todo inputTodo, TodoDbContext db)
 {
     var todo = await db.Todos.FindAsync(id);
 
@@ -67,7 +69,7 @@ static async Task<IResult> UpdateTodo(int id, Todo inputTodo, TodoDb db)
     return TypedResults.NoContent();
 }
 
-static async Task<IResult> DeleteTodo(int id, TodoDb db)
+static async Task<IResult> DeleteTodo(int id, TodoDbContext db)
 {
     if (await db.Todos.FindAsync(id) is Todo todo)
     {
