@@ -32,9 +32,8 @@ public class ClientPolicy
                 sleepDurationProvider: retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)),
                 onRetry: (ex, time) =>
                 {
-                    Debug.WriteLine($"--> TimeSpan: {time.TotalSeconds}");
+                    Debug.WriteLine($"========================> TimeSpan: {time.TotalSeconds}");
                 }
             );
-
     }
 }

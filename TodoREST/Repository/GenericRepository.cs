@@ -45,7 +45,7 @@ public class GenericRepository : IGenericRepository
             HttpResponseMessage response = await Policy
                 .HandleResult<HttpResponseMessage>(res => !res.IsSuccessStatusCode)
 
-              .RetryAsync(10)
+            .RetryAsync(10)
             //.WaitAndRetryAsync(retryCount: 5, retryAttempt => TimeSpan.FromSeconds(3))
             //.WaitAndRetryAsync(retryCount: 5, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)))
             //.WaitAndRetryAsync
@@ -54,18 +54,19 @@ public class GenericRepository : IGenericRepository
             //    sleepDurationProvider: retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)),
             //    onRetry: (ex, time) =>
             //    {
-            //        Debug.WriteLine($"--> TimeSpan: {time.TotalSeconds}");
+            //        Debug.WriteLine($"============================> TimeSpan: {time.TotalSeconds}");
             //    }
             //)
 
             .ExecuteAsync(async () => await _client.GetAsync(uri));
 
-            // With CachePolicy
-            //HttpResponseMessage response = await cachePolicy.ExecuteAsync(context => _client.GetAsync(uri), new Context("FooKey"));
-
             // With ClientPolicy.cs
             //HttpResponseMessage response = await _clientPolicy.LoggingExponentialHttpRetry.ExecuteAsync(() =>
             //_client.GetAsync(uri));
+
+            // With CachePolicy
+            //HttpResponseMessage response = await cachePolicy.ExecuteAsync(context => _client.GetAsync(uri), new Context("FooKey"));
+
             #endregion
 
             if (response.IsSuccessStatusCode)

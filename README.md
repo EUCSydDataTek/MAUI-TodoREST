@@ -1,104 +1,112 @@
-# 2.ItemGenericRepository & Minimal Api
+# 3.NetworkResiliencePolly
 
-# Minimal API (ItemWebApi)
+## Kontrol af netværksadgang med Connectivity
 
-**ItemWebApi** er et Minimal API med ASP.NET Core, som er bygget på baggrund af Tutorial: 
-[Create a minimal API with ASP.NET Core](https://learn.microsoft.com/en-us/aspnet/core/tutorials/min-web-api?view=aspnetcore-7.0&tabs=visual-studio)
-
-Data gemmes vha. EntityFramework i en Memory database.
-
-API'et kan testes vha. den medfølgende **todo.http** fil.
-
-### API operations
-
-| API                     | Description               | Request body | Response body        |
-|-------------------------|---------------------------|--------------|----------------------|
-| GET /todoitems          | Get all to-do items       | None         | Array of to-do items |
-| GET /todoitems/complete | Get completed to-do items | None         | Array of to-do items |
-| GET /todoitems/{id}     | Get an item by ID         | None         | To-do item           |
-| POST /todoitems         | Add a new item            | To-do item   | To-do item           |
-| PUT /todoitems/{id}     | Update an existing item   | To-do item   | None                 |
-| DELETE /todoitems/{id}  | Delete an item            | None         | None                 |
-
-###### Tabellen er lavet med [Tables Generator](https://www.tablesgenerator.com/markdown_tables)
-
-&nbsp;
-
-#### Nuget libraries
-- Microsoft.EntityFrameworkCore.InMemory 7.x.x
-
-&nbsp;
-
-
-
----
-# MAUI mobile client
-
-Mobil klienten har følgende funktioner:
-
-- Henter automatisk alle todo items når app'en startes
-- Når der laves push-to-refresh hentes alle todo items igen
-- Der kan tilføjes et nyt todo item ved at klikke på +-tegnet og udfylde `Name` og `Notes`. Klik Save.
-- Når der klikkes på et todo item får man mulighed for at ændre `Name`, `Notes` og `IsComplete`. Klik Save for at gemme eller Delete for at slette aktuelt todo Item.
-
-
-
-&nbsp;
-
-# Generic Reposistory
-
-Her benyttes et generisk repository med følgende interface:
+`Connectivity` konfigureres i *Startup.cs* i MAUI projektet.
+I *MainPageViewModel* laves et check af om der er netværksadgang.
 
 ```csharp
-public interface IGenericRepository
+if (connectivity.NetworkAccess != NetworkAccess.Internet)
 {
-    Task<T> GetAsync<T>(Uri uri, string authToken = "");
-
-    Task<bool> PostAsync<T>(Uri uri,T data, string authToken = "");
-
-    Task<R> PostAsync<T, R>(Uri uri, T data, string authToken = "");
-
-    Task<bool> PutAsync<T>(Uri uri, T data, string authToken = "");
-
-    Task<bool> DeleteAsync(Uri uri, string authToken = "");
+    await Shell.Current.DisplayAlert("No connectivity!", $"Please check internet and try again.", "OK");
+    return;
 }
 ```
 
-Alle metoderne har mulighed for at tage imod en AccessToken.
+&nbsp;
 
-`Task<T> GetAsync<T>(string id = "", string authToken = "")` henter en `List<T>` hvis `id` er tom, men et specifikt item `<T>` hvis et `id` sendes med.
+## Polly Retry Policy
+NuGet pakken **Polly** tilføjes MAUI projektet.
 
-Der er to udgaver af Post, nemlig:
+I *GenericRepository.cs* og `GetAsync()` metoden tilføjes en `Policy` med en `RetryAsync` metode:
 
+```csharp
+HttpResponseMessage response = await Policy
+    .HandleResult<HttpResponseMessage>(res => !res.IsSuccessStatusCode)
+    .RetryAsync(10)
 ```
-Task PostAsync<T>(T data, string authToken = "");
 
-Task<R> PostAsync<T, R>(T data, string authToken = "");
+I **ItemWebApi** projektet, *Program* klassen og metoden `GetAllTodos()` kastes et tilfældigt tal mellem 1 og 100.
+Tallet sammenlignes med det tal, som er skrevet ind i variablen èrrorPercent`.
+Er tallet 0 returneres altid HTTP 200, jo større værdi jo større chanche for fejl. 
+Vælges 100 vil den hver gang returnere HTTP 500. Status logges i Terminal-vinduet.
+
+Test: sæt errorPercent = 80, start begge projekter og kør app'en. Se i terminalen at der nogle gange laves flere forsøg inden statuskode 200 opnås. Dog maks. 10 forsøg.
+
+#### Med TimeSpan
+Nu ændres `RetryAsync` til at tage en `TimeSpan` som parameter: 
+```csharp
+HttpResponseMessage response = await Policy
+    .HandleResult<HttpResponseMessage>(res => !res.IsSuccessStatusCode)
+    .WaitAndRetryAsync(retryCount: 5, retryAttempt => TimeSpan.FromSeconds(3))
+```
+Bemærk at der nu går 3 sekunder mellem hvert forsøg.
+
+#### Med Exponential TimeSpan
+Nu ændres `WaitAndRetryAsync` til at beregne en `TimeSpan` som bliver større for hver gang: 
+```csharp
+HttpResponseMessage response = await Policy
+    .HandleResult<HttpResponseMessage>(res => !res.IsSuccessStatusCode)
+    .WaitAndRetryAsync(retryCount: 5, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)))
 ```
 
-Den første returnerer void, mens den anden returnerer det oprettede objekt, således at man f.eks. kan benytte et Id eller et TimeStamp som databasen opretter.
+Man kan tilføje en delegatemetode, som udskriver TimeSpan:
+```csharp
+HttpResponseMessage response = await Policy
+    .HandleResult<HttpResponseMessage>(res => !res.IsSuccessStatusCode)
+.WaitAndRetryAsync
+(
+    retryCount: 5,
+    sleepDurationProvider: retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)),
+    onRetry: (ex, time) =>
+    {
+        Debug.WriteLine($"--> TimeSpan: {time.TotalSeconds}");
+    }
+```
+Kig i Output-vinduet: Her ser man tydeligt at der går længere og længere tid mellem hvert forsøg: 2, 4, 8, 16 og 32 sekunder. 
+&nbsp;
 
-Alle metoder skriver i Output vinduet, hvis man benytter Debug.
+#### With ClientPolicy
+Der er oprettet en folder kaldet *Policies* og en klasse `ClientPolicy.cs`  med de forskellige udgaver af Policies.
+
+Husk at registrere `ClientPolicy` i *Startup.cs*:
+```csharp
+builder.Services.AddSingleton(new ClientPolicy());
+```
+
+I *GenericRepository.cs* og `GetAsync()` metoden bruges nu `ClientPolicy`:
+```csharp
+HttpResponseMessage response = await _clientPolicy.LoggingExponentialHttpRetry.ExecuteAsync(() =>
+_client.GetAsync(uri));
+```
+Test og se at det virker som før!
 
 &nbsp;
 
-## Configuration af URL
+#### With Polly Caching
+Installér nu NuGet pakken **Polly.Caching.Memory** i MAUI projektet.
 
-Pga. at Android Emulator benytter et andet netværk og heller ikke kender localhost er det nemmest at benytte ****Dev Tunnels***.
-Sæt WebApi projektet som Startup og vælg *https* og opret/vælg en *Dev Tunnel*. Derefter sættes begge projekter til Startup.
-
-I Constants klassen tilrettes url'en:
-
+Følgende kode registreres i MauiProgram.cs:
 ```csharp
-public static class Constants
+builder.Services.AddMemoryCache();
+builder.Services.AddSingleton<IAsyncCacheProvider, Polly.Caching.Memory.MemoryCacheProvider>();
+builder.Services.AddSingleton<IReadOnlyPolicyRegistry<string>, PolicyRegistry>((serviceProvider) =>
 {
-    // DevTunnes url, tilpas adressen
-    public static string BaseUrl = "https://xxx.euw.devtunnels.ms";
-    public static string Endpoint = "todoitems";
-}
+    PolicyRegistry registry = new();
+    registry.Add("myCachePolicy",
+        Policy.CacheAsync(serviceProvider.GetRequiredService<IAsyncCacheProvider>().AsyncFor<HttpResponseMessage>(),
+            TimeSpan.FromSeconds(10)));
+    return registry;
+});
 ```
 
+Tilføj følgende:
+```csharp
+HttpResponseMessage response = await cachePolicy.ExecuteAsync(context => _client.GetAsync(uri), new Context("FooKey"));
+```
 
+Sæt errorPercent = 0 i WebApi og sæt et breakpoint i `GetAllTodos`.
+Kør solution og se at der kun standses på breakpoint i Api første gang og derefter kun når der er gået 10 sekunder!
 &nbsp;
 
 

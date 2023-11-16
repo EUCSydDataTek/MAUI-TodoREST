@@ -34,8 +34,7 @@ public partial class MainPageViewModel : BaseViewModel
         {
             if (connectivity.NetworkAccess != NetworkAccess.Internet)
             {
-                await Shell.Current.DisplayAlert("No connectivity!",
-                    $"Please check internet and try again.", "OK");
+                await Shell.Current.DisplayAlert("No connectivity!", $"Please check internet and try again.", "OK");
                 return;
             }
 
