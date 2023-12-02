@@ -6,14 +6,8 @@ using TodoREST.Services;
 namespace TodoREST.ViewModels;
 
 [QueryProperty(nameof(TheItem), "item")]
-public partial class DetailItemViewModel : BaseViewModel
+public partial class DetailItemViewModel(IDataService service) : BaseViewModel
 {
-    readonly IDataService _service;
-    public DetailItemViewModel(IDataService service)
-    {
-        _service = service;
-    }
-
     [ObservableProperty]
     Item theItem;
 
@@ -27,14 +21,14 @@ public partial class DetailItemViewModel : BaseViewModel
     [RelayCommand]
     async Task Save()
     {
-        await _service.SaveItemAsync(TheItem, isNewItem);
+        await service.SaveItemAsync(TheItem, isNewItem);
         await Shell.Current.GoToAsync("..");
     }
 
     [RelayCommand]
     async Task Delete()
     {
-        await _service.DeleteItemAsync(TheItem);
+        await service.DeleteItemAsync(TheItem);
         await Shell.Current.GoToAsync("..");
     }
 

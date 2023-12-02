@@ -8,18 +8,9 @@ using TodoREST.Views;
 
 namespace TodoREST.ViewModels;
 
-public partial class MainPageViewModel : BaseViewModel
+public partial class MainPageViewModel(IDataService service, IConnectivity connectivity) : BaseViewModel
 {
     public ObservableCollection<Item> ItemsCollection { get; } = new();
-
-    readonly IDataService service;
-    private readonly IConnectivity connectivity;
-
-    public MainPageViewModel(IDataService service, IConnectivity connectivity)
-    {
-        this.service = service;
-        this.connectivity = connectivity;
-    }
 
     [ObservableProperty]
     bool isRefreshing;

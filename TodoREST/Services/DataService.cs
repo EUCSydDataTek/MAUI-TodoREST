@@ -3,15 +3,8 @@ using TodoREST.Models;
 
 namespace TodoREST.Services
 {
-    public class DataService : IDataService
+    public class DataService(IGenericRepository service) : IDataService
     {
-        private readonly IGenericRepository service;
-
-        public DataService(IGenericRepository service)
-        {
-            this.service = service;
-        }
-
         public async Task<List<Item>> GetItemsAsync()
         {
             UriBuilder builder = new(Constants.BaseUrl) { Path = Constants.Endpoint };
