@@ -2,15 +2,8 @@
 
 namespace TodoREST.Services
 {
-    public class TodoService : ITodoService
+    public class TodoService(IRestService service) : ITodoService
     {
-        IRestService _restService;
-
-        public TodoService(IRestService service)
-        {
-            _restService = service;
-        }
-
         public Task<List<TodoItem>> GetTasksAsync()
         {
             return _restService.RefreshDataAsync();

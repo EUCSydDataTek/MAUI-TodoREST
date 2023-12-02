@@ -6,14 +6,8 @@ using TodoREST.Services;
 namespace TodoREST.ViewModels;
 
 [QueryProperty(nameof(TodoItem), "item")]
-public partial class TodoItemViewModel : BaseViewModel
+public partial class TodoItemViewModel(ITodoService service) : BaseViewModel
 {
-    readonly ITodoService _todoService;
-    public TodoItemViewModel(ITodoService service)
-    {
-        _todoService = service;
-    }
-
     [ObservableProperty]
     TodoItem todoItem;
 
