@@ -27,7 +27,7 @@ HttpResponseMessage response = await Policy
 ```
 
 I **ItemWebApi** projektet, *Program* klassen og metoden `GetAllTodos()` kastes et tilfældigt tal mellem 1 og 100.
-Tallet sammenlignes med det tal, som er skrevet ind i variablen èrrorPercent`.
+Tallet sammenlignes med det tal, som er skrevet ind i variablen `errorPercent`.
 Er tallet 0 returneres altid HTTP 200, jo større værdi jo større chanche for fejl. 
 Vælges 100 vil den hver gang returnere HTTP 500. Status logges i Terminal-vinduet.
 
