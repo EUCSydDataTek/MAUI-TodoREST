@@ -22,11 +22,11 @@ public class GenericRepository : IGenericRepository
 
 
     #region GET
-    public async Task<T> GetAsync<T>(Uri uri, string authToken = "")
+    public async Task<T?> GetAsync<T>(Uri uri, string authToken = "")
     {
         ConfigureHttpClient(authToken);
 
-        T result = default;
+        T? result = default;
 
         try
         {
@@ -56,7 +56,7 @@ public class GenericRepository : IGenericRepository
             string json = JsonSerializer.Serialize<T>(data, _serializerOptions);
             StringContent content = new(json, Encoding.UTF8, "application/json");
 
-            HttpResponseMessage response = null;
+            HttpResponseMessage? response = null;
             response = await _client.PostAsync(uri, content);
 
             if (response.IsSuccessStatusCode)
@@ -113,7 +113,7 @@ public class GenericRepository : IGenericRepository
             string json = JsonSerializer.Serialize<T>(data, _serializerOptions);
             StringContent content = new(json, Encoding.UTF8, "application/json");
 
-            HttpResponseMessage response = null;
+            HttpResponseMessage? response = null;
             response = await _client.PutAsync(uri, content);
 
             if (response.IsSuccessStatusCode)

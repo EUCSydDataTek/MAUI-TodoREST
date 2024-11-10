@@ -5,7 +5,7 @@
 /// </summary>
 public interface IGenericRepository
 {
-    Task<T> GetAsync<T>(Uri uri, string authToken = "");
+    Task<T?> GetAsync<T>(Uri uri, string authToken = "");
 
     Task<bool> PostAsync<T>(Uri uri,T data, string authToken = "");
 
