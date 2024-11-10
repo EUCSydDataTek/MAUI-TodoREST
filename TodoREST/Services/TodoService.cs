@@ -2,21 +2,21 @@
 
 namespace TodoREST.Services
 {
-    public class TodoService(IRestService service) : ITodoService
+    public class TodoService(IRestService restService) : ITodoService
     {
         public Task<List<TodoItem>> GetTasksAsync()
         {
-            return _restService.RefreshDataAsync();
+            return restService.RefreshDataAsync();
         }
 
         public Task SaveTaskAsync(TodoItem item, bool isNewItem = false)
         {
-            return _restService.SaveTodoItemAsync(item, isNewItem);
+            return restService.SaveTodoItemAsync(item, isNewItem);
         }
 
         public Task DeleteTaskAsync(TodoItem item)
         {
-            return _restService.DeleteTodoItemAsync(item.Id);
+            return restService.DeleteTodoItemAsync(item.Id);
         }
     }
 }
