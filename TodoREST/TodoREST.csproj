@@ -12,6 +12,8 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
 
+		<WindowsSdkPackageVersion>10.0.19041.41</WindowsSdkPackageVersion>
+
 		<!-- Display name -->
 		<ApplicationTitle>TodoREST</ApplicationTitle>
 

@@ -8,13 +8,15 @@ namespace TodoREST.Services
         public async Task<List<Item>> GetItemsAsync()
         {
             UriBuilder builder = new(Constants.BaseUrl) { Path = Constants.Endpoint };
-            return await service.GetAsync<List<Item>>(builder.Uri);
+            var items = await service.GetAsync<List<Item>>(builder.Uri);
+            return items ?? [];
         }
 
         public async Task<Item> GetItemByIdAsync(string id)
         {
             UriBuilder builder = new(Constants.BaseUrl) { Path = $"{Constants.Endpoint}/{id}" };
-            return await service.GetAsync<Item>(builder.Uri);
+            var item = await service.GetAsync<Item>(builder.Uri);
+            return item ?? new Item();
         }
 
         public async Task SaveItemAsync(Item item, bool isNewItem = false)
