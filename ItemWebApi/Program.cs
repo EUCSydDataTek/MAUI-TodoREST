@@ -28,7 +28,7 @@ app.Run();
 
 static async Task<IResult> GetAllTodos(TodoDb db, ILogger<Program> logger)
 {
-    int errorPercent = 0;  // Er tallet 0 returneres altid HTTP 200, jo større værdi jo større chanche for fejl. Vælges 100 vil den hver gang returnere HTTP 500. Status logges i Terminal-vinduet.
+    int errorPercent = 50;  // Er tallet 0 returneres altid HTTP 200, jo større værdi jo større chanche for fejl. Vælges 100 vil den hver gang returnere HTTP 500. Status logges i Terminal-vinduet.
     Random rnd = new Random();
     int rndInteger = rnd.Next(1, 101);
     if (rndInteger <= errorPercent)

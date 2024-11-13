@@ -16,6 +16,7 @@
                 </OnPlatform>
             </ToolbarItem.IconImageSource>
         </ToolbarItem>
+        <ToolbarItem Command="{Binding GetItemsCommand}" Text="Get Items" />
     </ContentPage.ToolbarItems>
 
 
