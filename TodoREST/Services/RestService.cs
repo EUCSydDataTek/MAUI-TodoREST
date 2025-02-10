@@ -9,11 +9,11 @@ namespace TodoREST.Services
     {
         HttpClient _client;
         JsonSerializerOptions _serializerOptions;
-        public List<TodoItem>? Items { get; private set; }
+        public List<TodoItem> Items { get; private set; }
 
-        public RestService()
+        public RestService(HttpClient client)
         {
-            _client = new HttpClient();
+            _client = client;
             _serializerOptions = new JsonSerializerOptions
             {
                 PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
