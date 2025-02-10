@@ -9,9 +9,11 @@ public class GenericRepository : IGenericRepository
     readonly HttpClient _client;
     readonly JsonSerializerOptions _serializerOptions;
 
-    public GenericRepository()
+    public GenericRepository(HttpClient client)
     {
-        _client = new HttpClient();
+        _client = client;
+
+        _client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
         _serializerOptions = new JsonSerializerOptions
         {
@@ -22,15 +24,13 @@ public class GenericRepository : IGenericRepository
 
 
     #region GET
-    public async Task<T?> GetAsync<T>(Uri uri, string authToken = "")
+    public async Task<T?> GetAsync<T>(string endpoint)
     {
-        ConfigureHttpClient(authToken);
-
         T? result = default;
 
         try
         {
-            HttpResponseMessage response = await _client.GetAsync(uri);
+            HttpResponseMessage response = await _client.GetAsync(endpoint);
             if (response.IsSuccessStatusCode)
             {
                 string content = await response.Content.ReadAsStringAsync();
@@ -47,17 +47,15 @@ public class GenericRepository : IGenericRepository
     #endregion
 
     #region POST
-    public async Task<bool> PostAsync<T>(Uri uri, T data, string authToken = "")
+    public async Task<bool> PostAsync<T>(string endpoint, T data)
     {
-        ConfigureHttpClient(authToken);
-
         try
         {
             string json = JsonSerializer.Serialize<T>(data, _serializerOptions);
             StringContent content = new(json, Encoding.UTF8, "application/json");
 
             HttpResponseMessage? response = null;
-            response = await _client.PostAsync(uri, content);
+            response = await _client.PostAsync(endpoint, content);
 
             if (response.IsSuccessStatusCode)
             {
@@ -73,12 +71,9 @@ public class GenericRepository : IGenericRepository
         return false;
     }
 
-    public async Task<R> PostAsync<T, R>(Uri uri, T data, string authToken = "")
+    public async Task<R> PostAsync<T, R>(string endpoint, T data)
     {
-
-        ConfigureHttpClient(authToken);
-
-        R result = default;
+        R? result = default;
 
         try
         {
@@ -86,7 +81,7 @@ public class GenericRepository : IGenericRepository
             StringContent content = new(json, Encoding.UTF8, "application/json");
 
             HttpResponseMessage response = null;
-            response = await _client.PostAsync(uri, content);
+            response = await _client.PostAsync(endpoint, content);
 
             if (response.IsSuccessStatusCode)
             {
@@ -104,17 +99,15 @@ public class GenericRepository : IGenericRepository
     #endregion
 
     #region PUT
-    public async Task<bool> PutAsync<T>(Uri uri, T data, string authToken = "")
+    public async Task<bool> PutAsync<T>(string endpoint, T data)
     {
-        ConfigureHttpClient(authToken);
-
         try
         {
             string json = JsonSerializer.Serialize<T>(data, _serializerOptions);
             StringContent content = new(json, Encoding.UTF8, "application/json");
 
             HttpResponseMessage? response = null;
-            response = await _client.PutAsync(uri, content);
+            response = await _client.PutAsync(endpoint, content);
 
             if (response.IsSuccessStatusCode)
             {
@@ -132,11 +125,11 @@ public class GenericRepository : IGenericRepository
     #endregion
 
     #region DELETE
-    public async Task<bool> DeleteAsync(Uri uri, string authToken = "")
+    public async Task<bool> DeleteAsync(string endpoint)
     {
         try
         {
-            HttpResponseMessage response = await _client.DeleteAsync(uri);
+            HttpResponseMessage response = await _client.DeleteAsync(endpoint);
             if (response.IsSuccessStatusCode)
             {
                 Debug.WriteLine(@"+++++ TodoItem successfully deleted.");
@@ -149,22 +142,6 @@ public class GenericRepository : IGenericRepository
         }
         Debug.WriteLine(@"----- Item NOT deleted!");
         return false;
-    }
-    #endregion
-
-    #region HELPER
-    private void ConfigureHttpClient(string authToken)
-    {
-        _client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-
-        if (!string.IsNullOrEmpty(authToken))
-        {
-            _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", authToken);
-        }
-        else
-        {
-            _client.DefaultRequestHeaders.Authorization = null;
-        }
     }
     #endregion
 }

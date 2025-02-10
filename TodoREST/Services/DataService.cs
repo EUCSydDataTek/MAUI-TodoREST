@@ -7,15 +7,13 @@ namespace TodoREST.Services
     {
         public async Task<List<Item>> GetItemsAsync()
         {
-            UriBuilder builder = new(Constants.BaseUrl) { Path = Constants.Endpoint };
-            var items = await service.GetAsync<List<Item>>(builder.Uri);
+            var items = await service.GetAsync<List<Item>>(Constants.Endpoint);
             return items ?? [];
         }
 
         public async Task<Item> GetItemByIdAsync(string id)
         {
-            UriBuilder builder = new(Constants.BaseUrl) { Path = $"{Constants.Endpoint}/{id}" };
-            var item = await service.GetAsync<Item>(builder.Uri);
+            var item = await service.GetAsync<Item>($"{Constants.Endpoint}/{id}");
             return item ?? new Item();
         }
 
@@ -23,13 +21,11 @@ namespace TodoREST.Services
         {
             if (isNewItem)
             {
-                UriBuilder builder = new(Constants.BaseUrl) { Path = Constants.Endpoint };
-                await service.PostAsync(builder.Uri, item);
+                await service.PostAsync(Constants.Endpoint, item);
             }
             else
             {
-                UriBuilder builder = new(Constants.BaseUrl) { Path = $"{Constants.Endpoint}/{item.Id}" };
-                await service.PutAsync(builder.Uri, item);
+                await service.PutAsync($"{Constants.Endpoint}/{item.Id}", item);
             }
 
             //Item newItem = await service.PostAsync<Item, Item>(item);
@@ -37,8 +33,7 @@ namespace TodoREST.Services
 
         public async Task DeleteItemAsync(Item item)
         {
-            UriBuilder builder = new(Constants.BaseUrl) { Path = $"{Constants.Endpoint}/{item.Id}" };
-            bool result = await service.DeleteAsync(builder.Uri);
+            bool result = await service.DeleteAsync($"{Constants.Endpoint}/{item.Id}");
         }
     }
 }
