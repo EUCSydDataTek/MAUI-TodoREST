@@ -1,4 +1,5 @@
-﻿using TodoREST.Services;
+﻿using Microsoft.Extensions.Logging;
+using TodoREST.Services;
 using TodoREST.ViewModels;
 using TodoREST.Views;
 
@@ -18,8 +19,15 @@ public static class MauiProgram
 			});
 
         builder.Services.AddSingleton(Connectivity.Current);
-		builder.Services.AddSingleton<IRestService, RestService>();
-		builder.Services.AddSingleton<ITodoService, TodoService>();
+
+		//builder.Services.AddSingleton<IRestService, RestService>();
+
+		builder.Services.AddHttpClient<IRestService, RestService>(client =>
+        {
+            client.BaseAddress = new Uri(Constants.BaseUrl);
+        });
+
+        builder.Services.AddSingleton<ITodoService, TodoService>();
 
 
         builder.Services.AddSingleton<TodoListViewModel>();
@@ -28,6 +36,11 @@ public static class MauiProgram
         builder.Services.AddTransient<TodoItemViewModel>();
         builder.Services.AddTransient<TodoItemPage>();
 
-		return builder.Build();
-	}
+#if DEBUG
+        builder.Logging.AddDebug();
+#endif
+
+        return builder.Build();
+    }
 }
+

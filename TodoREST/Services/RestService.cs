@@ -9,7 +9,7 @@ namespace TodoREST.Services
     {
         HttpClient _client;
         JsonSerializerOptions _serializerOptions;
-        public List<TodoItem> Items { get; private set; }
+        public List<TodoItem>? Items { get; private set; }
 
         public RestService()
         {
@@ -28,7 +28,7 @@ namespace TodoREST.Services
             UriBuilder builder = new(Constants.BaseUrl) { Path = Constants.Endpoint };
             try
             {
-                HttpResponseMessage response = await _client.GetAsync(builder.Uri);
+                HttpResponseMessage response = await _client.GetAsync(Constants.Endpoint);
                 if (response.IsSuccessStatusCode)
                 {
                     string content = await response.Content.ReadAsStringAsync();
@@ -59,7 +59,7 @@ namespace TodoREST.Services
                 else
                 {
                     UriBuilder builder = new(Constants.BaseUrl) { Path = $"{Constants.Endpoint}/{item.Id}" };
-                    response = await _client.PutAsync(builder.Uri, content);
+                    response = await _client.PutAsync($"{Constants.Endpoint}/{item.Id}", content);
                 }
 
                 if (response.IsSuccessStatusCode)
@@ -77,7 +77,7 @@ namespace TodoREST.Services
 
             try
             {
-                HttpResponseMessage response = await _client.DeleteAsync(builder.Uri);
+                HttpResponseMessage response = await _client.DeleteAsync($"{Constants.Endpoint}/{id}");
                 if (response.IsSuccessStatusCode)
                     Debug.WriteLine(@"\tTodoItem successfully deleted.");
             }

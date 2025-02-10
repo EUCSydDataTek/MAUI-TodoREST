@@ -4,7 +4,7 @@
     {
         // With DevTunnels
 
-        public static string BaseUrl = "https://???.euw.devtunnels.ms";
+        public static string BaseUrl = "https://68sz3gl5-7245.euw.devtunnels.ms";
         public static string Endpoint = "todoitems";
     }
 }
