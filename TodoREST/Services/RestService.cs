@@ -25,7 +25,6 @@ namespace TodoREST.Services
         {
             Items = new List<TodoItem>();
 
-            UriBuilder builder = new(Constants.BaseUrl) { Path = Constants.Endpoint };
             try
             {
                 HttpResponseMessage response = await _client.GetAsync(Constants.Endpoint);
@@ -53,12 +52,10 @@ namespace TodoREST.Services
                 HttpResponseMessage response = null;
                 if (isNewItem)
                 {
-                    UriBuilder builder = new(Constants.BaseUrl) { Path = Constants.Endpoint };
-                    response = await _client.PostAsync(builder.Uri, content);
+                    response = await _client.PostAsync(Constants.Endpoint, content);
                 }
                 else
                 {
-                    UriBuilder builder = new(Constants.BaseUrl) { Path = $"{Constants.Endpoint}/{item.Id}" };
                     response = await _client.PutAsync($"{Constants.Endpoint}/{item.Id}", content);
                 }
 
@@ -73,8 +70,6 @@ namespace TodoREST.Services
 
         public async Task DeleteTodoItemAsync(int id)
         {
-            UriBuilder builder = new(Constants.BaseUrl) { Path = $"{Constants.Endpoint}/{id}" };
-
             try
             {
                 HttpResponseMessage response = await _client.DeleteAsync($"{Constants.Endpoint}/{id}");

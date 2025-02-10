@@ -20,8 +20,6 @@ public static class MauiProgram
 
         builder.Services.AddSingleton(Connectivity.Current);
 
-		//builder.Services.AddSingleton<IRestService, RestService>();
-
 		builder.Services.AddHttpClient<IRestService, RestService>(client =>
         {
             client.BaseAddress = new Uri(Constants.BaseUrl);
