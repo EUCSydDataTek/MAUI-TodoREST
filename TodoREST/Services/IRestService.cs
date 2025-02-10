@@ -2,7 +2,7 @@
 
 namespace TodoREST.Services
 {
-    public interface IDataService
+    public interface IRestService
     {
         Task<List<Item>> GetItemsAsync();
         Task<Item> GetItemByIdAsync(string id);

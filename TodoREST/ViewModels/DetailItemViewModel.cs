@@ -8,8 +8,8 @@ namespace TodoREST.ViewModels;
 [QueryProperty(nameof(TheItem), "item")]
 public partial class DetailItemViewModel : BaseViewModel
 {
-    readonly IDataService _service;
-    public DetailItemViewModel(IDataService service)
+    readonly IRestService _service;
+    public DetailItemViewModel(IRestService service)
     {
         _service = service;
     }

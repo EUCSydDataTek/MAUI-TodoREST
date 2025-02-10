@@ -5,13 +5,13 @@
 /// </summary>
 public interface IGenericRepository
 {
-    Task<T> GetAsync<T>(Uri uri, string authToken = "");
+    Task<T?> GetAsync<T>(string endpoint);
 
-    Task<bool> PostAsync<T>(Uri uri, T data, string authToken = "");
+    Task<bool> PostAsync<T>(string endpoint, T data);
 
-    Task<R> PostAsync<T, R>(Uri uri, T data, string authToken = "");
+    Task<R> PostAsync<T, R>(string endpoint, T data);
 
-    Task<bool> PutAsync<T>(Uri uri, T data, string authToken = "");
+    Task<bool> PutAsync<T>(string endpoint, T data);
 
-    Task<bool> DeleteAsync(Uri uri, string authToken = "");
+    Task<bool> DeleteAsync(string endpoint);
 }
