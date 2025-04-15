@@ -15,7 +15,24 @@ if (connectivity.NetworkAccess != NetworkAccess.Internet)
 
 &nbsp;
 
-## Polly Retry Policy
+## HttpClient med StandardResilienceHandler
+
+Læs om [Build resilient HTTP apps: Key development patterns](https://learn.microsoft.com/en-us/dotnet/core/resilience/http-resilience) i MAUI dokumentationen.
+
+Tilføj Nuget-pakken: Microsoft.Extensions.Http.Resilience
+
+I *MauiProgram.cs* registreres `StandardResilienceHandler` sammen med typed HttpClient:
+```csharp
+ builder.Services.AddHttpClient<IGenericRepository, GenericRepository>(client =>
+        {
+            client.BaseAddress = new Uri(Constants.BaseUrl);
+        })
+        .AddStandardResilienceHandler();  
+```
+
+&nbsp;
+
+## Polly med manuel Retry Policy
 NuGet pakken **Polly** tilføjes MAUI projektet.
 
 I *GenericRepository.cs* og `GetAsync()` metoden tilføjes en `Policy` med en `RetryAsync` metode:
